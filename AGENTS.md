@@ -41,6 +41,7 @@ pnpm dev | build | lint | typecheck | test | check (lint+typecheck+test)
 Fetched articles may be paywalled content. The app must never be exposed on the
 public internet; access is via private network only. Render markdown with no raw HTML.
 Files in fixtures/ contain real personal data (email address, tracking tokens). The repo must stay private. Never paste raw fixtures into public places.
+`GMAIL_APP_PASSWORD` must never be logged, printed in error messages, or committed - errors from IMAP clients should be caught and re-thrown with a sanitized message.
 
 
 fixtures/html/ contains full copyrighted article text fetched for personal testing. Same rule as fixtures/emails/: repo stays private, never paste raw fixture content into public places.
