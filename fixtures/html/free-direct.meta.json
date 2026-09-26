@@ -1,0 +1,31 @@
+{
+  "requestedUrl": "https://medium.com/@mike.jung.global/i-missed-service-in-node-js-so-i-built-it-with-express-705887729302",
+  "fetchUrl": "https://medium.com/@mike.jung.global/i-missed-service-in-node-js-so-i-built-it-with-express-705887729302",
+  "via": "direct",
+  "httpStatus": 200,
+  "responseHeaders": {
+    "alt-svc": "h3=\":443\"; ma=86400",
+    "cache-control": "no-cache, no-store, max-age=0, must-revalidate",
+    "cf-cache-status": "DYNAMIC",
+    "cf-ray": "a40dfe512ce009d6-CPT",
+    "connection": "keep-alive",
+    "content-encoding": "gzip",
+    "content-security-policy": "frame-ancestors 'self' https://medium.com",
+    "content-type": "text/html; charset=utf-8",
+    "date": "Sat, 26 Sep 2026 00:01:21 GMT",
+    "medium-fulfilled-by": "edgy/8.17.0, valencia/main-20260922-131020-b0adeb6f7d, lite/main-20260925-192831-5915ee295d, rito/main-20260925-192831-5915ee295d, tutu/main-20260925-183002-f02dd22634",
+    "server": "cloudflare",
+    "set-cookie": "_cfuvid=Amv1Dm0waB8ZYPO1g4QIimAFnnim28VSQHGGDT.aZh0-1790380879.5485866-1.0.1.1-rbbl2XB2NzIUcUSQQSUNbjNS0flsPOFEkng3XUWCWjM; HttpOnly; SameSite=None; Secure; Path=/; Domain=javascript.plainenglish.io",
+    "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+    "transfer-encoding": "chunked",
+    "vary": "Accept-Encoding",
+    "x-content-type-options": "nosniff",
+    "x-envoy-upstream-service-time": "917",
+    "x-powered-by": "Express",
+    "x-request-received-at": "1790380879729"
+  },
+  "fetchedAt": "2026-09-26T00:01:20.555Z",
+  "contentLength": 240884,
+  "elapsedMs": 4207,
+  "error": null
+}

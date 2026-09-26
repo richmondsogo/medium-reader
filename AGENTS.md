@@ -1,4 +1,4 @@
-﻿# medium-reader
+# medium-reader
 
 Private single-user app: ingests Medium Daily Digest emails via IMAP, fetches
 articles, converts to markdown, stores in SQLite, and serves a clean reader UI.
@@ -41,3 +41,6 @@ pnpm dev | build | lint | typecheck | test | check (lint+typecheck+test)
 Fetched articles may be paywalled content. The app must never be exposed on the
 public internet; access is via private network only. Render markdown with no raw HTML.
 Files in fixtures/ contain real personal data (email address, tracking tokens). The repo must stay private. Never paste raw fixtures into public places.
+
+
+fixtures/html/ contains full copyrighted article text fetched for personal testing. Same rule as fixtures/emails/: repo stays private, never paste raw fixture content into public places.

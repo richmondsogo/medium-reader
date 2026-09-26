@@ -1,0 +1,19 @@
+{
+  "requestedUrl": "https://medium.com/@nadiatidona1/the-most-pleasant-people-to-be-around-have-this-in-common-1af83fa4ab35",
+  "fetchUrl": "https://freedium-mirror.cfd/https://medium.com/@nadiatidona1/the-most-pleasant-people-to-be-around-have-this-in-common-1af83fa4ab35",
+  "via": "freedium-mirror",
+  "httpStatus": 200,
+  "responseHeaders": {
+    "cache-control": "public, max-age=604800, stale-while-revalidate=86400",
+    "content-length": "62431",
+    "content-type": "text/html",
+    "date": "Sat, 26 Sep 2026 00:02:27 GMT",
+    "etag": "\"1y58ske\"",
+    "link": "</_app/immutable/assets/0.D1zCdr1R.css>; rel=\"preload\"; as=\"style\"; nopush, </_app/immutable/assets/config.C7_Y42cI.css>; rel=\"preload\"; as=\"style\"; nopush, </_app/immutable/assets/3.B4y_igXu.css>; rel=\"preload\"; as=\"style\"; nopush, </_app/immutable/entry/start.COrtRp6l.js>; rel=\"modulepreload\"; nopush, </_app/immutable/chunks/Cxqj8bfy.js>; rel=\"modulepreload\"; nopush, </_app/immutable/chunks/DArslJ2t.js>; rel=\"modulepreload\"; nopush, </_app/immutable/chunks/BPGgmvgU.js>; rel=\"modulepreload\"; nopush, </_app/immutable/entry/app.DjFqUeit.js>; rel=\"modulepreload\"; nopush, </_app/immutable/chunks/DUhYyqGA.js>; rel=\"modulepreload\"; nopush, </_app/immutable/chunks/DL98RXXA.js>; rel=\"modulepreload\"; nopush, </_app/immutable/chunks/BCEWf5Ql.js>; rel=\"modulepreload\"; nopush, </_app/immutable/nodes/0.BQCHBRQR.js>; rel=\"modulepreload\"; nopush, </_app/immutable/chunks/B6SDdgbj.js>; rel=\"modulepreload\"; nopush, </_app/immutable/nodes/3.DlOmvpi5.js>; rel=\"modulepreload\"; nopush, </_app/immutable/chunks/Div3v9Yn.js>; rel=\"modulepreload\"; nopush",
+    "x-sveltekit-page": "true"
+  },
+  "fetchedAt": "2026-09-26T00:02:28.149Z",
+  "contentLength": 62412,
+  "elapsedMs": 1361,
+  "error": null
+}
