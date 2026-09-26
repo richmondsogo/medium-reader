@@ -1,4 +1,4 @@
-﻿# Architecture Overview
+# Architecture Overview
 
 `medium-reader` is a private, single-user application that ingests Medium Daily Digest emails via IMAP, fetches article content, cleans and converts it to markdown, stores it in SQLite, and serves it through a distraction-free reader UI.
 
