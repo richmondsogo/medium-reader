@@ -14,6 +14,8 @@ describe("env configuration", () => {
       "https://freedium-mirror.cfd",
       "https://freedium.cfd",
     ]);
+    expect(config.ARTICLE_FETCH_DELAY_MS).toBe(1500);
+    expect(config.INGEST_LOOKBACK_DAYS).toBe(14);
   });
 
   it("parses valid custom environment variables", () => {
@@ -23,6 +25,8 @@ describe("env configuration", () => {
       FREEDIUM_BASE_URLS: "https://custom.freedium.com, https://other.com",
       GMAIL_USER: "test@example.com",
       GMAIL_APP_PASSWORD: "test-password",
+      ARTICLE_FETCH_DELAY_MS: "500",
+      INGEST_LOOKBACK_DAYS: "30",
     });
 
     expect(config.DATABASE_PATH).toBe("/custom/path/app.db");
@@ -31,6 +35,8 @@ describe("env configuration", () => {
       "https://custom.freedium.com",
       "https://other.com",
     ]);
+    expect(config.ARTICLE_FETCH_DELAY_MS).toBe(500);
+    expect(config.INGEST_LOOKBACK_DAYS).toBe(30);
   });
 
   it("throws a readable error when LOG_LEVEL is invalid", () => {

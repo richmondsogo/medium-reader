@@ -11,6 +11,8 @@ export const envSchema = z.object({
     .transform((val) => val.split(",").map((s) => s.trim()).filter(Boolean)),
   GMAIL_USER: z.string(),
   GMAIL_APP_PASSWORD: z.string(),
+  ARTICLE_FETCH_DELAY_MS: z.coerce.number().default(1500),
+  INGEST_LOOKBACK_DAYS: z.coerce.number().default(14),
 });
 
 export type Env = z.infer<typeof envSchema>;
