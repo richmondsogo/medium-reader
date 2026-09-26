@@ -10,7 +10,10 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "format": "prettier --write .",
-    "check": "pnpm lint && pnpm typecheck && pnpm test"
+    "check": "pnpm lint && pnpm typecheck && pnpm test",
+    "fetch-digests": "tsx src/cli/fetch-digests.ts",
+    "purge-old-articles": "tsx src/cli/purge-old-articles.ts",
+    "inspect-db": "tsx src/cli/inspect-db.ts"
   },
   "dependencies": {
     "@mozilla/readability": "^0.6.0",
