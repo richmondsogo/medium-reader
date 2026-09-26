@@ -69,7 +69,7 @@ export class ImapflowClient implements ImapClient {
       })) {
         results.push({
           uid: message.uid,
-          messageId: message.envelope.messageId,
+          messageId: message.envelope?.messageId || "",
         });
       }
       return results;
