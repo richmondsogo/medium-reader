@@ -66,6 +66,13 @@ const results: { uid: number; messageId: string; subject?: string }[] = [];     
       for await (const message of this.client.fetch(searchCriteria, {
         envelope: true,
       })) {
+        // Gmail IMAP search can be fuzzy, so we double-check the sender name locally
+        const fromArr = message.envelope?.from || [];
+        const fromName = fromArr[0]?.name || "";
+        if (!fromName.includes("Medium Daily Digest")) {
+          continue;
+        }
+
         results.push({
           uid: message.uid,
           messageId: message.envelope?.messageId || "",

@@ -22,6 +22,13 @@ describe("fakeImapClient contract test", () => {
         rawBuffer: Buffer.from("Message 3"),
         date: new Date("2026-09-10T10:00:00Z"),
       },
+      {
+        uid: 4,
+        messageId: "<msg4@example.com>",
+        rawBuffer: Buffer.from("Not A Digest"),
+        date: new Date("2026-09-10T10:00:00Z"),
+        from: "Medium <noreply@medium.com>",
+      },
     ];
 
     const client = new FakeImapClient(fakeEmails);

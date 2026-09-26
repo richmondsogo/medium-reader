@@ -5,6 +5,7 @@ export interface FakeEmail {
   messageId: string;
   rawBuffer: Buffer;
   date?: Date; // Optional date if we want to test 'since' filters
+  from?: string; // e.g. "Medium Daily Digest <noreply@medium.com>"
 }
 
 export class FakeImapClient implements ImapClient {
@@ -31,6 +32,10 @@ export class FakeImapClient implements ImapClient {
     }
 
     let matches = this.emails;
+    matches = matches.filter((e) => {
+      const fromStr = e.from ?? "Medium Daily Digest <noreply@medium.com>";
+      return fromStr.includes("Medium Daily Digest");
+    });
     if (since) {
       matches = matches.filter((e) => e.date && e.date >= since);
     }
