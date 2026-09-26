@@ -39,6 +39,10 @@ pnpm dev | build | lint | typecheck | test | check (lint+typecheck+test)
 circumstance without stopping and asking me first, explaining exactly why a
 force push is needed. If a commit needs fixing, use a new commit or `git
 commit --amend` (only if unpushed), never a forced rewrite of pushed history.
+- pnpm check does not catch a missing/empty default export in a Next.js
+  page.tsx or layout.tsx file, since plain tsc/eslint don't enforce that
+  Next.js-specific rule. Any App Router route file must be verified by
+  actually loading it in a running dev server, not by pnpm check alone.
 
 ## Security
 
@@ -49,3 +53,13 @@ Files in fixtures/ contain real personal data (email address, tracking tokens). 
 
 
 fixtures/html/ contains full copyrighted article text fetched for personal testing. Same rule as fixtures/emails/: repo stays private, never paste raw fixture content into public places.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
