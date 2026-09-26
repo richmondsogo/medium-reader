@@ -16,6 +16,7 @@ step), SQLite via better-sqlite3 + Drizzle (added in the DB step), Vitest, zod.
 ## Commands
 
 pnpm dev | build | lint | typecheck | test | check (lint+typecheck+test)
+pnpm fetch-digests | purge-old-articles | inspect-db
 
 ## Conventions
 

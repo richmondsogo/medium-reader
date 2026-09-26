@@ -39,8 +39,11 @@
 
 ## Component Architecture
 
-1. **Ingest CLI (`src/ingest`)**:
-   Runs as an idempotent cron job. Polls Medium Daily Digest emails via IMAP, parses digest HTML to extract article URLs, runs them through a resilient fallback fetcher chain, and converts article HTML into markdown using Mozilla Readability.
+1. **Ingest CLI (`src/ingest` and `src/cli`)**:
+   Runs via CLI commands (which can be scheduled as cron jobs):
+   - `pnpm fetch-digests`: Polls Medium Daily Digest emails via IMAP, parses digest HTML to extract article URLs, runs them through a resilient fallback fetcher chain, converts article HTML into markdown using Mozilla Readability, and stores them idempotently in the database.
+   - `pnpm purge-old-articles`: Cleans up the database by deleting un-saved articles older than 90 days.
+   - `pnpm inspect-db`: Provides quick, read-only visibility into database statistics and recent ingests.
 
 2. **Database & Server Layer (`src/server`)**:
    Encapsulates all SQLite database operations with Drizzle ORM. Enables Write-Ahead Logging (WAL) for concurrent single-writer/multi-reader access and FTS5 virtual tables for full-text search.
