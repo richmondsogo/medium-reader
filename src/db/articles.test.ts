@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach } from "vitest";
+﻿import { describe, it, expect, beforeEach } from "vitest";
 import { createDb, type DbClient } from "./client";
-import { upsertArticle, setArticleRead, setArticleSaved, purgeOldArticles, getFetchStatusRank, type InsertArticle } from "./articles";
+import { upsertArticle, setArticleRead, setArticleSaved, purgeOldArticles, countPurgeCandidates, getFetchStatusRank, type InsertArticle } from "./articles";
 import { articles } from "./schema";
 
 describe("db/articles", () => {
@@ -98,8 +98,8 @@ describe("db/articles", () => {
     });
   });
 
-  describe("purgeOldArticles", () => {
-    it("deletes only old, unsaved articles", () => {
+  describe("purgeOldArticles and countPurgeCandidates", () => {
+    it("deletes only old, unsaved articles, and count matches delete", () => {
       const oldDate = "2020-01-01T00:00:00Z";
       const recentDate = "2024-01-01T00:00:00Z";
       const cutoff = "2022-01-01T00:00:00Z";
@@ -120,6 +120,9 @@ describe("db/articles", () => {
         url: "url4", contentMarkdown: "c", isSaved: true, ingestedAt: recentDate
       }).run();
 
+      const count = countPurgeCandidates(db, cutoff);
+      expect(count).toBe(1);
+
       const deletedCount = purgeOldArticles(db, cutoff);
       expect(deletedCount).toBe(1);
 
@@ -132,3 +135,4 @@ describe("db/articles", () => {
     });
   });
 });
+
