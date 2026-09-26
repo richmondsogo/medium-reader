@@ -1,29 +1,13 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { Inter, Source_Serif_4 } from "next/font/google";
+import { Inter } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEffect, useState } from "react";
-import {
-  ArticleTitle,
-  ArticleHeading2,
-  ArticleHeading3,
-  ArticleBody,
-  ListItemTitle,
-  Meta,
-  SectionLabel,
-  UiLabel,
-  UiLabelSmall,
-  InlineCode,
-} from "@/components/ui/typography";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const sourceSerif4 = Source_Serif_4({
-  subsets: ["latin"],
-  variable: "--font-source-serif-4",
-});
 
 export default function StyleGuidePage() {
   const { theme, setTheme } = useTheme();
@@ -37,18 +21,18 @@ export default function StyleGuidePage() {
 
   return (
     <div
-      className={`min-h-screen bg-background text-foreground p-8 ${inter.variable} ${sourceSerif4.variable}`}
+      className={`min-h-screen bg-background text-foreground p-8 ${inter.variable}`}
     >
       <div className="max-w-3xl mx-auto space-y-8">
         {/* Nav-style row */}
         <nav
           className={`${inter.className} flex items-center justify-between py-4`}
         >
-          <SectionLabel className="tracking-tight">
+          <div className="font-semibold text-lg tracking-tight">
             Medium Reader
-          </SectionLabel>
+          </div>
           <div className="flex items-center space-x-4">
-            <UiLabel className="text-muted-foreground">Style Guide</UiLabel>
+            <span className="text-sm text-muted-foreground">Style Guide</span>
             {mounted && (
               <Button
                 variant="outline"
@@ -65,47 +49,47 @@ export default function StyleGuidePage() {
         <Separator className="bg-border" />
 
         {/* Headings and Paragraph */}
-        <div className={`${sourceSerif4.className} space-y-6`}>
-          <ArticleTitle className="text-foreground">
+        <div className="space-y-6">
+          <h1 className="text-4xl font-bold tracking-tight text-foreground">
             Style Guide & Typography
-          </ArticleTitle>
-          <ArticleHeading2 className="text-foreground">
+          </h1>
+          <h2 className="text-2xl font-semibold text-foreground">
             Subheading Example (H2)
-          </ArticleHeading2>
-          <ArticleHeading3 className="text-muted-foreground">
+          </h2>
+          <h3 className="text-xl font-medium text-muted-foreground">
             Section Title (H3)
-          </ArticleHeading3>
-          <ArticleBody className="text-foreground">
-            This is a paragraph rendered in the Source Serif 4 font. It
+          </h3>
+          <p className="text-lg leading-relaxed text-foreground">
+            This is a paragraph rendered in the Inter font. It
             demonstrates the reading experience for the main article content.
             The design uses Tailwind CSS theme tokens like{" "}
-            <InlineCode>
+            <code className="text-sm bg-muted text-muted-foreground px-1 py-0.5 rounded">
               bg-background
-            </InlineCode>{" "}
+            </code>{" "}
             and{" "}
-            <InlineCode>
+            <code className="text-sm bg-muted text-muted-foreground px-1 py-0.5 rounded">
               text-foreground
-            </InlineCode>{" "}
+            </code>{" "}
             to ensure proper contrast in both light and dark modes. Good
             typography is essential for a comfortable reading experience.
-          </ArticleBody>
+          </p>
         </div>
 
         {/* Small UI text & Metadata */}
         <div className={`${inter.className} space-y-2`}>
-          <Meta as="div">
+          <div className="text-sm text-muted-foreground">
             Published on September 26, 2026 • 5 min read
-          </Meta>
-          <UiLabelSmall as="div" className="text-muted-foreground uppercase tracking-wider">
+          </div>
+          <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">
             Tag: Typography
-          </UiLabelSmall>
+          </div>
         </div>
 
         <Separator className="bg-border" />
 
         {/* UI Components */}
         <div className={`${inter.className} space-y-6`}>
-          <ListItemTitle as="h2">UI Components</ListItemTitle>
+          <h2 className="text-xl font-semibold">UI Components</h2>
           <div className="flex space-x-4">
             <Button className="focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
               Primary Button
@@ -125,16 +109,16 @@ export default function StyleGuidePage() {
           </div>
 
           <div className="pt-4">
-            <SectionLabel as="h3" className="text-muted-foreground mb-2 block">
+            <h3 className="text-sm font-medium text-muted-foreground mb-2">
               ScrollArea Example
-            </SectionLabel>
+            </h3>
             <ScrollArea className="h-40 w-full rounded-md border border-border p-4 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
               <div className="space-y-4">
                 {[1, 2, 3, 4, 5, 6, 7].map((i) => (
-                  <UiLabel key={i} as="div" className="text-foreground">
+                  <div key={i} className="text-sm text-foreground">
                     Scrollable content item {i} demonstrating the ScrollArea
                     component.
-                  </UiLabel>
+                  </div>
                 ))}
               </div>
             </ScrollArea>

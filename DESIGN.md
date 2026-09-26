@@ -1,15 +1,14 @@
-﻿# medium-reader — Design System
+# medium-reader — Design System
 
 Inspired by brianlovin.com/hn: dense, type-driven, no visual noise. The
 design does the least amount of stuff possible and still feels intentional.
 
 ## Fonts
-- **Source Serif 4** — article titles and article body text ONLY (inside the
-  reader pane). Applied via the `font-serif` utility class.
-- **Inter** — everything else: sidebar, nav, buttons, metadata, bylines,
-  dates, tags, reading time. This is the default (`font-sans`, applied
-  globally on `<html>`), so most UI text needs no explicit class at all.
-- **Geist Mono** — inline `<code>` elements only. Nowhere else.
+- **Inter** — single typeface for the entire application: article titles, headings,
+  body text, blockquotes, sidebar, nav, buttons, metadata, bylines, dates, tags,
+  and reading time. This is the default (`font-sans`, applied globally on `<html>`),
+  so UI and article text inherit this font automatically.
+- **Geist Mono** — inline `<code>` elements and code blocks only. Nowhere else.
 
 ## Color & theme
 - Dark-mode-first, near-black background (`oklch` low-lightness), matching
@@ -42,7 +41,7 @@ something is tempting to add "for polish," check the reference first — it
 almost certainly does less, not more.
 
 ## Typography system
-- All text elements must route through <typography.tsx> wrapper components (e.g., <ArticleTitle>, <Meta>).
+- All text elements must route through <typography.tsx> wrapper components (e.g., <ArticleTitle>, <Meta>).  
 - No component may specify its own ont-size, ont-weight, or line-height. This is enforced by ESLint.
 - Hardcoded constants (only used inside 	ypography.tsx):
   - list-item-title: 16px size, 24px line-height, medium weight (semibold when selected).

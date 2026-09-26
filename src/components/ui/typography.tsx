@@ -7,10 +7,10 @@ export const typographyVariants = cva(
   {
     variants: {
       variant: {
-        "article-title": "font-serif text-[32px] md:text-[40px] leading-[1.2] font-semibold tracking-tight",
-        "article-heading-2": "font-serif text-[24px] font-semibold mt-12 mb-4 leading-tight",
-        "article-heading-3": "font-serif text-[20px] font-semibold mt-8 mb-3 leading-snug",
-        "article-body": "font-serif text-[19px] leading-[1.7] [&_p]:mb-6",
+        "article-title": "text-[32px] md:text-[40px] leading-[1.2] font-semibold tracking-tight",
+        "article-heading-2": "text-[24px] font-semibold mt-12 mb-4 leading-tight",
+        "article-heading-3": "text-[20px] font-semibold mt-8 mb-3 leading-snug",
+        "article-body": "text-[19px] leading-[1.7] [&_p]:mb-6",
         "list-item-title": "font-sans text-[16px] leading-[24px] font-medium",
         "list-item-title-selected": "font-sans text-[16px] leading-[24px] font-semibold",
         "meta": "font-sans text-[14px] leading-[20px] font-normal text-muted-foreground",
@@ -18,7 +18,7 @@ export const typographyVariants = cva(
         "ui-label": "font-sans text-sm",
         "ui-label-small": "font-sans text-[12px] font-semibold",
         "inline-code": "font-mono text-[13px] text-muted-foreground bg-muted px-1 py-0.5 rounded",
-        "article-blockquote": "border-l-2 border-border pl-5 italic text-muted-foreground my-8 text-[19px] leading-[1.7] font-serif",
+        "article-blockquote": "border-l-2 border-border pl-5 italic text-muted-foreground my-8 text-[19px] leading-[1.7]",
       }
     }
   }
