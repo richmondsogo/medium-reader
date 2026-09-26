@@ -50,8 +50,3 @@
 
 4. **Security & Deployment**:
    Deployed strictly on a private network (e.g. Tailscale) with no public exposure and no external auth layer needed. Markdown rendering disallows raw HTML to prevent injection vulnerabilities.
-
-## Maintenance Operations
-
-- **Purge Old Articles CLI (`src/cli/purge-old-articles.ts`)**:
-  Safe-by-default maintenance script. Running it without flags acts as a dry run, printing how many old, unsaved articles would be deleted. It requires the `--confirm` flag to actually perform the deletion. By construction, both the dry-run count and the actual deletion use the exact same predicate function.

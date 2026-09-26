@@ -26,7 +26,6 @@ pnpm dev | build | lint | typecheck | test | check (lint+typecheck+test)
 - Never log secrets. Never commit .env. Config comes only from src/lib/env.ts.
 - Tests are colocated as *.test.ts. Parsers are tested against files in fixtures/.
 - No new dependency without asking the user first and justifying it.
-- CLI scripts (e.g. purge-old-articles) are safe-by-default (dry-run unless --confirm is passed), and count/delete share one predicate by construction.
 
 ## Working agreement (IMPORTANT)
 
@@ -36,6 +35,10 @@ pnpm dev | build | lint | typecheck | test | check (lint+typecheck+test)
   docs/steps/, and one conventional commit.
 - If a test fails, fix the cause; never delete or weaken tests to pass.
 - If unsure, ask.
+- STANDING RULE: never run `git push --force` or `git push -f` under any
+circumstance without stopping and asking me first, explaining exactly why a
+force push is needed. If a commit needs fixing, use a new commit or `git
+commit --amend` (only if unpushed), never a forced rewrite of pushed history.
 
 ## Security
 

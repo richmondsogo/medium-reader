@@ -1,4 +1,4 @@
-import { eq, lt, and, count, SQL } from "drizzle-orm";
+import { eq, lt, and } from "drizzle-orm";
 import { articles } from "./schema";
 import type { DbClient } from "./client";
 
@@ -70,24 +70,14 @@ export function setArticleSaved(db: DbClient, id: number, isSaved: boolean) {
     .get();
 }
 
-function purgeCandidatesCondition(olderThanIso: string): SQL {
-  return and(
-    lt(articles.ingestedAt, olderThanIso),
-    eq(articles.isSaved, false)
-  )!;
-}
-
-export function countPurgeCandidates(db: DbClient, olderThanIso: string): number {
-  const result = db.select({ value: count() })
-    .from(articles)
-    .where(purgeCandidatesCondition(olderThanIso))
-    .get();
-  return result?.value ?? 0;
-}
-
 export function purgeOldArticles(db: DbClient, olderThanIso: string) {
   const result = db.delete(articles)
-    .where(purgeCandidatesCondition(olderThanIso))
+    .where(
+      and(
+        lt(articles.ingestedAt, olderThanIso),
+        eq(articles.isSaved, false)
+      )
+    )
     .run();
 
   return result.changes;
