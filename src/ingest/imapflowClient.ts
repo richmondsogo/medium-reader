@@ -62,8 +62,7 @@ export class ImapflowClient implements ImapClient {
         searchCriteria.since = since;
       }
 
-      const results: { uid: number; messageId: string }[] = [];
-      // Fetch envelope to get messageId.
+const results: { uid: number; messageId: string; subject?: string }[] = [];      // Fetch envelope to get messageId.
       for await (const message of this.client.fetch(searchCriteria, {
         envelope: true,
       })) {

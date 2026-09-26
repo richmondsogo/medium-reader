@@ -42,4 +42,18 @@ describe("env configuration", () => {
       }),
     ).toThrow(/Invalid environment configuration: LOG_LEVEL/);
   });
+
+  it("throws a readable error when GMAIL_USER or GMAIL_APP_PASSWORD is missing", () => {
+    expect(() =>
+      parseEnv({
+        GMAIL_USER: "test@example.com",
+      }),
+    ).toThrow(/Invalid environment configuration: GMAIL_APP_PASSWORD/);
+
+    expect(() =>
+      parseEnv({
+        GMAIL_APP_PASSWORD: "test-password",
+      }),
+    ).toThrow(/Invalid environment configuration: GMAIL_USER/);
+  });
 });
