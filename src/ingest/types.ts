@@ -38,3 +38,24 @@ export const digestEmailSchema = z.object({
 });
 
 export type DigestEmail = z.infer<typeof digestEmailSchema>;
+
+export type FetchAttemptResult = {
+  html: string;
+  via: "direct" | "freedium-mirror" | "freedium";
+  httpStatus: number;
+};
+
+export type Completeness = "complete" | "locked";
+
+export type FetchStatus = "ok" | "partial" | "failed";
+
+export type ExtractedArticle = {
+  url: string;
+  contentMarkdown: string;
+  extractedTitle?: string;
+  extractedByline?: string;
+  wordCount: number;
+  fetchStatus: FetchStatus;
+  fetchedVia: "direct" | "freedium-mirror" | "freedium" | "none";
+  fetchedAt: string;
+};

@@ -1,8 +1,12 @@
-﻿import { z } from "zod";
+import { z } from "zod";
 
 export const envSchema = z.object({
   DATABASE_PATH: z.string().default("./data/medium-reader.db"),
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
+  FREEDIUM_BASE_URLS: z
+    .string()
+    .default("https://freedium-mirror.cfd,https://freedium.cfd")
+    .transform((val) => val.split(",").map((s) => s.trim()).filter(Boolean)),
 });
 
 export type Env = z.infer<typeof envSchema>;
