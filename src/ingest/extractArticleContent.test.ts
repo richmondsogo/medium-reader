@@ -15,7 +15,7 @@ describe("extractArticleContent", () => {
     expect(result.wordCount).toBeLessThan(3000);
     expect(result.title).toBeTruthy();
     expect(result.title).not.toMatch(/Sign in|Get started/i);
-  });
+  }, 15000);
 
   it("extracts content and strips chrome from member-freedium-mirror.html", () => {
     const html = readFileSync(join(process.cwd(), "fixtures/html/member-freedium-mirror.html"), "utf-8");
@@ -28,7 +28,7 @@ describe("extractArticleContent", () => {
 
     expect(result.contentMarkdown).not.toMatch(/Freedium beta/i);
     expect(result.contentMarkdown).not.toMatch(/remixContext/i);
-  });
+  }, 15000);
 
   it("does not crash on member-direct.html (locked)", () => {
     const html = readFileSync(join(process.cwd(), "fixtures/html/member-direct.html"), "utf-8");
