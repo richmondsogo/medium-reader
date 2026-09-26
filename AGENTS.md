@@ -16,7 +16,6 @@ step), SQLite via better-sqlite3 + Drizzle (added in the DB step), Vitest, zod.
 ## Commands
 
 pnpm dev | build | lint | typecheck | test | check (lint+typecheck+test)
-pnpm fetch-digests | purge-old-articles | inspect-db
 
 ## Conventions
 
@@ -27,6 +26,7 @@ pnpm fetch-digests | purge-old-articles | inspect-db
 - Never log secrets. Never commit .env. Config comes only from src/lib/env.ts.
 - Tests are colocated as *.test.ts. Parsers are tested against files in fixtures/.
 - No new dependency without asking the user first and justifying it.
+- CLI scripts (e.g. purge-old-articles) are safe-by-default (dry-run unless --confirm is passed), and count/delete share one predicate by construction.
 
 ## Working agreement (IMPORTANT)
 
