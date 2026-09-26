@@ -40,3 +40,13 @@ design does the least amount of stuff possible and still feels intentional.
 No cards, no shadows, no decorative icons, no thumbnails in the list. If
 something is tempting to add "for polish," check the reference first — it
 almost certainly does less, not more.
+
+## Typography system
+- All text elements must route through <typography.tsx> wrapper components (e.g., <ArticleTitle>, <Meta>).
+- No component may specify its own ont-size, ont-weight, or line-height. This is enforced by ESLint.
+- Hardcoded constants (only used inside 	ypography.tsx):
+  - list-item-title: 16px size, 24px line-height, medium weight (semibold when selected).
+  - meta: 14px size, 20px line-height, normal weight.
+  - rticle-body: 18px-20px size (Tailwind lg), 1.6-1.7 line-height.
+  - section-label: 15px size, medium weight.
+  - ui-label-small: 12px size, semibold weight.

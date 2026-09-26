@@ -1,5 +1,5 @@
 import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
+import { cva } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 export const typographyVariants = cva(
@@ -16,33 +16,35 @@ export const typographyVariants = cva(
         "meta": "font-sans text-[14px] leading-[20px] font-normal text-muted-foreground",
         "section-label": "font-sans text-[15px] font-medium",
         "ui-label": "font-sans text-sm",
+        "ui-label-small": "font-sans text-[12px] font-semibold",
+        "inline-code": "font-mono text-[13px] text-muted-foreground bg-muted px-1 py-0.5 rounded",
       }
     }
   }
 )
 
-export function ArticleTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return <h1 className={cn(typographyVariants({ variant: "article-title" }), className)} {...props} />
+export function ArticleTitle({ className, as: Component = "h1", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
+  return <Component className={cn(typographyVariants({ variant: "article-title" }), className)} {...props} />
 }
 
-export function ArticleHeading2({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return <h2 className={cn(typographyVariants({ variant: "article-heading-2" }), className)} {...props} />
+export function ArticleHeading2({ className, as: Component = "h2", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
+  return <Component className={cn(typographyVariants({ variant: "article-heading-2" }), className)} {...props} />
 }
 
-export function ArticleHeading3({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return <h3 className={cn(typographyVariants({ variant: "article-heading-3" }), className)} {...props} />
+export function ArticleHeading3({ className, as: Component = "h3", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
+  return <Component className={cn(typographyVariants({ variant: "article-heading-3" }), className)} {...props} />
 }
 
-export function ArticleBody({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
-  return <p className={cn(typographyVariants({ variant: "article-body" }), className)} {...props} />
+export function ArticleBody({ className, as: Component = "p", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
+  return <Component className={cn(typographyVariants({ variant: "article-body" }), className)} {...props} />
 }
 
-export function ListItemTitle({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) {
-  return <span className={cn(typographyVariants({ variant: "list-item-title" }), className)} {...props} />
+export function ListItemTitle({ className, as: Component = "span", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
+  return <Component className={cn(typographyVariants({ variant: "list-item-title" }), className)} {...props} />
 }
 
-export function ListItemTitleSelected({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) {
-  return <span className={cn(typographyVariants({ variant: "list-item-title-selected" }), className)} {...props} />
+export function ListItemTitleSelected({ className, as: Component = "span", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
+  return <Component className={cn(typographyVariants({ variant: "list-item-title-selected" }), className)} {...props} />
 }
 
 export function Meta({ className, as: Component = "span", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
@@ -55,4 +57,12 @@ export function SectionLabel({ className, as: Component = "span", ...props }: Re
 
 export function UiLabel({ className, as: Component = "span", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
   return <Component className={cn(typographyVariants({ variant: "ui-label" }), className)} {...props} />
+}
+
+export function InlineCode({ className, as: Component = "code", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
+  return <Component className={cn(typographyVariants({ variant: "inline-code" }), className)} {...props} />
+}
+
+export function UiLabelSmall({ className, as: Component = "span", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
+  return <Component className={cn(typographyVariants({ variant: "ui-label-small" }), className)} {...props} />
 }

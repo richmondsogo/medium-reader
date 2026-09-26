@@ -15,6 +15,8 @@ import {
   Meta,
   SectionLabel,
   UiLabel,
+  UiLabelSmall,
+  InlineCode,
 } from "@/components/ui/typography";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -77,13 +79,13 @@ export default function StyleGuidePage() {
             This is a paragraph rendered in the Source Serif 4 font. It
             demonstrates the reading experience for the main article content.
             The design uses Tailwind CSS theme tokens like{" "}
-            <code className="text-[13px] bg-muted text-muted-foreground px-1 py-0.5 rounded font-mono">
+            <InlineCode>
               bg-background
-            </code>{" "}
+            </InlineCode>{" "}
             and{" "}
-            <code className="text-[13px] bg-muted text-muted-foreground px-1 py-0.5 rounded font-mono">
+            <InlineCode>
               text-foreground
-            </code>{" "}
+            </InlineCode>{" "}
             to ensure proper contrast in both light and dark modes. Good
             typography is essential for a comfortable reading experience.
           </ArticleBody>
@@ -94,9 +96,9 @@ export default function StyleGuidePage() {
           <Meta as="div">
             Published on September 26, 2026 • 5 min read
           </Meta>
-          <UiLabel as="div" className="text-[12px] text-muted-foreground uppercase tracking-wider font-semibold">
+          <UiLabelSmall as="div" className="text-muted-foreground uppercase tracking-wider">
             Tag: Typography
-          </UiLabel>
+          </UiLabelSmall>
         </div>
 
         <Separator className="bg-border" />
@@ -123,9 +125,9 @@ export default function StyleGuidePage() {
           </div>
 
           <div className="pt-4">
-            <UiLabel as="h3" className="text-muted-foreground mb-2 block font-medium">
+            <SectionLabel as="h3" className="text-muted-foreground mb-2 block">
               ScrollArea Example
-            </UiLabel>
+            </SectionLabel>
             <ScrollArea className="h-40 w-full rounded-md border border-border p-4 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
               <div className="space-y-4">
                 {[1, 2, 3, 4, 5, 6, 7].map((i) => (
