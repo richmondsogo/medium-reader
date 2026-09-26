@@ -7,6 +7,8 @@ export const envSchema = z.object({
     .string()
     .default("https://freedium-mirror.cfd,https://freedium.cfd")
     .transform((val) => val.split(",").map((s) => s.trim()).filter(Boolean)),
+  GMAIL_USER: z.string(),
+  GMAIL_APP_PASSWORD: z.string(),
 });
 
 export type Env = z.infer<typeof envSchema>;

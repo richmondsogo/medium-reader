@@ -3,7 +3,10 @@ import { parseEnv } from "./env";
 
 describe("env configuration", () => {
   it("applies default values when env vars are missing", () => {
-    const config = parseEnv({});
+    const config = parseEnv({
+      GMAIL_USER: "test@example.com",
+      GMAIL_APP_PASSWORD: "test-password",
+    });
 
     expect(config.DATABASE_PATH).toBe("./data/medium-reader.db");
     expect(config.LOG_LEVEL).toBe("info");
@@ -18,6 +21,8 @@ describe("env configuration", () => {
       DATABASE_PATH: "/custom/path/app.db",
       LOG_LEVEL: "debug",
       FREEDIUM_BASE_URLS: "https://custom.freedium.com, https://other.com",
+      GMAIL_USER: "test@example.com",
+      GMAIL_APP_PASSWORD: "test-password",
     });
 
     expect(config.DATABASE_PATH).toBe("/custom/path/app.db");
@@ -32,6 +37,8 @@ describe("env configuration", () => {
     expect(() =>
       parseEnv({
         LOG_LEVEL: "verbose",
+        GMAIL_USER: "test@example.com",
+        GMAIL_APP_PASSWORD: "test-password",
       }),
     ).toThrow(/Invalid environment configuration: LOG_LEVEL/);
   });
