@@ -16,9 +16,9 @@ async function main() {
       console.log(`- UID: ${email.uid} | Message-ID: ${email.messageId}`);
       console.log(`  Subject: ${email.subject || "(No Subject)"}`);
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error("\nError during IMAP dry run:");
-    console.error(error.message);
+    console.error(error instanceof Error ? error.message : error);
   } finally {
     console.log("\nDisconnecting...");
     await client.disconnect();
