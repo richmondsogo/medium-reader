@@ -7,10 +7,11 @@ export const typographyVariants = cva(
   {
     variants: {
       variant: {
-        "article-title": "font-serif text-3xl md:text-4xl font-bold leading-tight",
-        "article-heading-2": "font-serif text-2xl font-bold leading-tight",
-        "article-heading-3": "font-serif text-xl font-bold leading-snug",
-        "article-body": "font-serif text-lg leading-[1.7]",
+        "article-title": "font-serif text-[32px] md:text-[40px] leading-[1.2] font-semibold tracking-tight",
+        "article-heading-2": "font-serif text-[24px] font-semibold mt-12 mb-4",
+        "article-heading-3": "font-serif text-[20px] font-semibold mt-8 mb-3",
+        "article-body": "font-serif text-[19px] leading-[1.7] [&_p]:mb-6",
+        "article-blockquote": "border-l-2 border-border pl-5 italic text-muted-foreground my-8 text-[19px] leading-[1.7] font-serif",
         "list-item-title": "font-sans text-[16px] leading-[24px] font-medium",
         "list-item-title-selected": "font-sans text-[16px] leading-[24px] font-semibold",
         "meta": "font-sans text-[14px] leading-[20px] font-normal text-muted-foreground",
@@ -37,6 +38,10 @@ export function ArticleHeading3({ className, as: Component = "h3", ...props }: R
 
 export function ArticleBody({ className, as: Component = "p", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
   return <Component className={cn(typographyVariants({ variant: "article-body" }), className)} {...props} />
+}
+
+export function ArticleBlockquote({ className, as: Component = "blockquote", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
+  return <Component className={cn(typographyVariants({ variant: "article-blockquote" }), className)} {...props} />
 }
 
 export function ListItemTitle({ className, as: Component = "span", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
