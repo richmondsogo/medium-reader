@@ -13,3 +13,6 @@ This step adds the real-world executable entrypoints that run the ingestion and 
 - Updated `docs/architecture.md` and `AGENTS.md` to reflect the CLI tools and their usages.
 
 These scripts run synchronously from the terminal (or cron) and do not include automated tests as they are merely thin glue around already-tested core logic (`fetchDigests`, `purgeOldArticles`, etc.).
+
+## Real-world validation
+During the first live run, an initial `fetch-digests` run was interrupted (Ctrl+C) partway through, having already processed 9 of 15 found digest emails. A second run correctly skipped those 9 (verified via `processedEmails` timestamps) and completed the remaining 6. The final state was 193 distinct articles from 225 possible (15 emails x 15 articles), with the 32-article gap fully explained by legitimate overlap across digests and confirmed via a URL-uniqueness check. There were no duplicates and no data loss. This is real evidence that the idempotency and upsert design work under actual interrupted/resumed conditions, not just in tests.
