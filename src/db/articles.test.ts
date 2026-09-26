@@ -64,6 +64,40 @@ describe("db/articles", () => {
     });
   });
 
+  describe("setArticleRead", () => {
+    it("updates isRead to true while isSaved remains false", () => {
+      const inserted = upsertArticle(db, {
+        url: "https://example.com/read-test",
+        title: "Read Test",
+        contentMarkdown: "Content",
+      }).row;
+      
+      expect(inserted.isRead).toBe(false);
+      expect(inserted.isSaved).toBe(false);
+
+      const updated = setArticleRead(db, inserted.id, true);
+      expect(updated.isRead).toBe(true);
+      expect(updated.isSaved).toBe(false);
+    });
+  });
+
+  describe("setArticleSaved", () => {
+    it("updates isSaved to true while isRead remains false", () => {
+      const inserted = upsertArticle(db, {
+        url: "https://example.com/save-test",
+        title: "Save Test",
+        contentMarkdown: "Content",
+      }).row;
+      
+      expect(inserted.isRead).toBe(false);
+      expect(inserted.isSaved).toBe(false);
+
+      const updated = setArticleSaved(db, inserted.id, true);
+      expect(updated.isSaved).toBe(true);
+      expect(updated.isRead).toBe(false);
+    });
+  });
+
   describe("purgeOldArticles", () => {
     it("deletes only old, unsaved articles", () => {
       const oldDate = "2020-01-01T00:00:00Z";
