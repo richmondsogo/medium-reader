@@ -48,7 +48,7 @@ export class ImapflowClient implements ImapClient {
 
   async findDigestEmails(
     since?: Date,
-  ): Promise<{ uid: number; messageId: string }[]> {
+  ): Promise<{ uid: number; messageId: string; subject?: string }[]> {
     await this.connect();
 
     // Using INBOX for now. Gmail's "[Gmail]/All Mail" is another option,
@@ -70,6 +70,7 @@ export class ImapflowClient implements ImapClient {
         results.push({
           uid: message.uid,
           messageId: message.envelope?.messageId || "",
+          subject: message.envelope?.subject || "",
         });
       }
       return results;

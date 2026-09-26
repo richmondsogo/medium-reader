@@ -25,7 +25,7 @@ export class FakeImapClient implements ImapClient {
 
   async findDigestEmails(
     since?: Date,
-  ): Promise<{ uid: number; messageId: string }[]> {
+  ): Promise<{ uid: number; messageId: string; subject?: string }[]> {
     if (!this.connected) {
       throw new Error("Client is not connected");
     }
@@ -38,6 +38,7 @@ export class FakeImapClient implements ImapClient {
     return matches.map((e) => ({
       uid: e.uid,
       messageId: e.messageId,
+      subject: "Fake Subject",
     }));
   }
 

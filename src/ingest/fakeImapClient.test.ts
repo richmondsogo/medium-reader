@@ -35,9 +35,9 @@ describe("fakeImapClient contract test", () => {
     const allEmails = await client.findDigestEmails();
     expect(allEmails).toHaveLength(3);
     expect(allEmails).toEqual([
-      { uid: 1, messageId: "<msg1@example.com>" },
-      { uid: 2, messageId: "<msg2@example.com>" },
-      { uid: 3, messageId: "<msg3@example.com>" },
+      { uid: 1, messageId: "<msg1@example.com>", subject: "Fake Subject" },
+      { uid: 2, messageId: "<msg2@example.com>", subject: "Fake Subject" },
+      { uid: 3, messageId: "<msg3@example.com>", subject: "Fake Subject" },
     ]);
 
     // findDigestEmails with since filter
