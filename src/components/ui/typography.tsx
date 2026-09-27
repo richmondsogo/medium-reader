@@ -8,6 +8,7 @@ export const typographyVariants = cva(
     variants: {
       variant: {
         "article-title": "text-[32px] md:text-[40px] leading-[1.2] font-semibold tracking-tight",
+        "article-subtitle": "font-sans text-[18px] md:text-[20px] leading-[1.4] text-muted-foreground font-normal",
         "article-heading-2": "text-[24px] font-semibold mt-12 mb-4 leading-tight",
         "article-heading-3": "text-[20px] font-semibold mt-8 mb-3 leading-snug",
         "article-body": "text-[19px] leading-[1.7] [&_p]:mb-6",
@@ -26,6 +27,10 @@ export const typographyVariants = cva(
 
 export function ArticleTitle({ className, as: Component = "h1", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
   return <Component className={cn(typographyVariants({ variant: "article-title" }), className)} {...props} />
+}
+
+export function ArticleSubtitle({ className, as: Component = "p", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
+  return <Component className={cn(typographyVariants({ variant: "article-subtitle" }), className)} {...props} />
 }
 
 export function ArticleHeading2({ className, as: Component = "h2", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {

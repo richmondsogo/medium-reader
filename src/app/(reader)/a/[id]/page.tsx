@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { env } from "@/lib/env";
 import { createDb } from "@/db/client";
 import { getArticleById } from "@/db/articles";
 import {
   ArticleTitle,
+  ArticleSubtitle,
   ArticleHeading2,
   ArticleHeading3,
   ArticleBody,
@@ -54,13 +55,16 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
           href="/"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
-          <ArrowUpRight className="h-3.5 w-3.5" />
+          <ArrowLeft className="h-3.5 w-3.5" />
           <span>Back</span>
         </Link>
       </div>
 
       <header className="mb-12 space-y-4">
         <ArticleTitle>{article.title ?? "Untitled"}</ArticleTitle>
+        {article.snippet?.trim() ? (
+          <ArticleSubtitle>{article.snippet.trim()}</ArticleSubtitle>
+        ) : null}
         <Meta as="div" className="flex items-center gap-1.5">
           <span>
             {article.authorName}

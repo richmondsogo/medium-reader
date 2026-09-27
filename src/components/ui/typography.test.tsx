@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { ListItemTitle, ListItemTitleSelected } from "./typography";
+import { ListItemTitle, ListItemTitleSelected, ArticleSubtitle } from "./typography";
 
 describe("typography - ListItemTitle", () => {
   it("renders with text-foreground by default when isRead is false", () => {
@@ -26,5 +26,15 @@ describe("typography - ListItemTitle", () => {
     expect(readSelected).toContain("font-semibold");
     expect(readSelected).toContain("text-muted-foreground");
     expect(readSelected).not.toContain("text-foreground");
+  });
+});
+
+describe("typography - ArticleSubtitle", () => {
+  it("renders with article-subtitle typography classes and muted-foreground", () => {
+    const html = renderToStaticMarkup(<ArticleSubtitle>Teaser text snippet</ArticleSubtitle>);
+    expect(html).toContain("text-muted-foreground");
+    expect(html).toContain("text-[18px]");
+    expect(html).toContain("font-normal");
+    expect(html).toContain("Teaser text snippet");
   });
 });
