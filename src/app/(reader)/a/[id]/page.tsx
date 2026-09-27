@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/typography";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { MarkReadOnView } from "./mark-read-on-view";
 
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -45,6 +46,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
 
   return (
     <article className="mx-auto w-full max-w-[720px] py-12 px-6">
+      <MarkReadOnView id={article.id} isRead={article.isRead} />
       <div className="mb-8 md:hidden">
         <Link
           href="/"

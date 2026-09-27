@@ -1,6 +1,6 @@
 import * as React from "react"
 import { cva } from "class-variance-authority"
-import { cn } from "@/lib/utils"
+import { cn } from "../../lib/utils"
 
 export const typographyVariants = cva(
   "",
@@ -44,12 +44,45 @@ export function ArticleBlockquote({ className, as: Component = "blockquote", ...
   return <Component className={cn(typographyVariants({ variant: "article-blockquote" }), className)} {...props} />
 }
 
-export function ListItemTitle({ className, as: Component = "span", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
-  return <Component className={cn(typographyVariants({ variant: "list-item-title" }), className)} {...props} />
+export interface ListItemTitleProps extends React.HTMLAttributes<HTMLElement> {
+  as?: React.ElementType;
+  isRead?: boolean;
 }
 
-export function ListItemTitleSelected({ className, as: Component = "span", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
-  return <Component className={cn(typographyVariants({ variant: "list-item-title-selected" }), className)} {...props} />
+export function ListItemTitle({
+  className,
+  as: Component = "span",
+  isRead = false,
+  ...props
+}: ListItemTitleProps) {
+  return (
+    <Component
+      className={cn(
+        typographyVariants({ variant: "list-item-title" }),
+        isRead ? "text-muted-foreground" : "text-foreground",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+export function ListItemTitleSelected({
+  className,
+  as: Component = "span",
+  isRead = false,
+  ...props
+}: ListItemTitleProps) {
+  return (
+    <Component
+      className={cn(
+        typographyVariants({ variant: "list-item-title-selected" }),
+        isRead ? "text-muted-foreground" : "text-foreground",
+        className
+      )}
+      {...props}
+    />
+  );
 }
 
 export function Meta({ className, as: Component = "span", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {

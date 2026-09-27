@@ -51,7 +51,7 @@ export function Sidebar({
                       : "hover:bg-muted/40 hover:shadow-elevated"
                   }`}
                 >
-                  <TitleComponent className="block line-clamp-2 text-foreground mb-2.5">
+                  <TitleComponent isRead={article.isRead} className="block line-clamp-2 mb-2.5">
                     {article.title}
                   </TitleComponent>
                   <Meta className="flex min-w-0 items-center gap-1.5">
