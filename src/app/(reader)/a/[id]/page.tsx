@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { dummyArticles } from "@/lib/dummy-articles";
 import {
   ArticleTitle,
@@ -27,6 +29,16 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
 
   return (
     <article className="mx-auto max-w-[65ch] py-12 px-6 lg:px-8">
+      <div className="mb-8 md:hidden">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <span>Back</span>
+        </Link>
+      </div>
+
       <header className="mb-12 space-y-4">
         <ArticleTitle>{article.title}</ArticleTitle>
         <div className="font-sans text-sm text-muted-foreground">
