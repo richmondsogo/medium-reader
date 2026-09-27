@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { env } from "@/lib/env";
 import { createDb } from "@/db/client";
 import { getArticleById } from "@/db/articles";
@@ -14,6 +14,7 @@ import {
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { rewriteImageUrl } from "@/lib/rewriteImageUrl";
+import { cleanArticleMarkdown } from "@/lib/cleanArticleMarkdown";
 import { MarkReadOnView } from "./mark-read-on-view";
 
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
@@ -53,7 +54,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
           href="/"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowUpRight className="h-3.5 w-3.5" />
           <span>Back</span>
         </Link>
       </div>
@@ -74,7 +75,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
             title="Open original article"
             aria-label="Open original article"
           >
-            <ExternalLink className="h-3.5 w-3.5" />
+          <ArrowUpRight className="h-3.5 w-3.5" />
           </a>
         </Meta>
       </header>
@@ -111,7 +112,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
             ),
           }}
         >
-          {article.contentMarkdown}
+          {cleanArticleMarkdown(article.contentMarkdown, article.title)}
         </ReactMarkdown>
       </ArticleBody>
     </article>
