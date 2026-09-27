@@ -28,12 +28,14 @@ design does the least amount of stuff possible and still feels intentional.
 - One border style: 1px, using the `border` token, low opacity.
 - One radius value, used everywhere or nowhere.
 - Spacing: Tailwind's default 4px scale only. No arbitrary pixel values.
+- Heading-to-subtext gap: standard gap between a title/heading and its accompanying meta/subtext row is `mb-2.5` (10px on Tailwind's 4px scale).
 
 ## Motion & interaction
 - Transitions: ~120ms, opacity/transform only, used sparingly.
 - Every interactive element has a visible `focus-visible` state.
 - Sidebar hover/selected states are shown via background AND text color
-  together, never color alone.
+  together, never color alone. Rows use an inset rounded highlight (`mx-2 rounded-lg`)
+  with `bg-muted/60` (selected) and `hover:bg-muted/40` (hover), without hard-edged accent borders.
 
 ## Non-goals for now
 No cards, no shadows, no decorative icons, no thumbnails in the list. If

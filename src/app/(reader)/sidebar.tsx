@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { dummyArticles } from "@/lib/dummy-articles";
+import { ListItemTitle, ListItemTitleSelected, Meta } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 
 export function Sidebar({ className }: { className?: string } = {}) {
@@ -32,29 +33,26 @@ export function Sidebar({ className }: { className?: string } = {}) {
           {dummyArticles.map((article) => {
             const href = `/a/${article.id}`;
             const isSelected = pathname === href;
+            const TitleComponent = isSelected ? ListItemTitleSelected : ListItemTitle;
 
             return (
               <li key={article.id} className="m-0 p-0 scroll-my-3">
                 <Link
                   href={href}
-                  className={`block w-full px-4 py-3 transition-colors ${
+                  className={`block mx-2 rounded-lg px-4 py-3 transition-colors ${
                     isSelected ? "bg-muted/60" : "hover:bg-muted/40"
                   }`}
                 >
-                  <span
-                    className={`block text-[16px] leading-[24px] line-clamp-2 text-foreground ${
-                      isSelected ? "font-semibold" : "font-medium"
-                    }`}
-                  >
+                  <TitleComponent className="block line-clamp-2 text-foreground mb-2.5">
                     {article.title}
-                  </span>
-                  <span className="flex min-w-0 items-center gap-1.5 text-[14px] leading-[20px] font-normal text-muted-foreground">
+                  </TitleComponent>
+                  <Meta className="flex min-w-0 items-center gap-1.5">
                     <span className="truncate min-w-0">
                       {article.publicationName || article.authorName}
                     </span>
                     <span className="shrink-0">&middot;</span>
                     <span className="shrink-0">{article.readingTimeMinutes} min</span>
-                  </span>
+                  </Meta>
                 </Link>
               </li>
             );
