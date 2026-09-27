@@ -1,4 +1,4 @@
-﻿import { eq, lt, and, count, SQL } from "drizzle-orm";
+import { eq, lt, and, count, desc, SQL } from "drizzle-orm";
 import { articles } from "./schema";
 import type { DbClient } from "./client";
 
@@ -92,3 +92,30 @@ export function purgeOldArticles(db: DbClient, olderThanIso: string) {
 
   return result.changes;
 }
+
+export function listArticles(db: DbClient) {
+  return db
+    .select({
+      id: articles.id,
+      title: articles.title,
+      authorName: articles.authorName,
+      publicationName: articles.publicationName,
+      readingTimeMinutes: articles.readingTimeMinutes,
+      isRead: articles.isRead,
+      isSaved: articles.isSaved,
+    })
+    .from(articles)
+    .orderBy(desc(articles.ingestedAt))
+    .all();
+}
+
+export type SidebarArticle = ReturnType<typeof listArticles>[number];
+
+export function getArticleById(db: DbClient, id: number) {
+  return db
+    .select()
+    .from(articles)
+    .where(eq(articles.id, id))
+    .get();
+}
+

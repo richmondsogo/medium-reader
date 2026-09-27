@@ -1,6 +1,16 @@
-﻿import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { createDb, type DbClient } from "./client";
-import { upsertArticle, setArticleRead, setArticleSaved, purgeOldArticles, countPurgeCandidates, getFetchStatusRank, type InsertArticle } from "./articles";
+import {
+  upsertArticle,
+  setArticleRead,
+  setArticleSaved,
+  purgeOldArticles,
+  countPurgeCandidates,
+  getFetchStatusRank,
+  listArticles,
+  getArticleById,
+  type InsertArticle,
+} from "./articles";
 import { articles } from "./schema";
 
 describe("db/articles", () => {
@@ -134,5 +144,96 @@ describe("db/articles", () => {
       expect(urls).toContain("url4");
     });
   });
+
+  describe("listArticles", () => {
+    it("returns articles ordered by ingestedAt DESC selecting only sidebar fields", () => {
+      // Seed rows with out-of-order ingestedAt
+      db.insert(articles).values({
+        url: "https://example.com/item1",
+        title: "Item 1",
+        authorName: "Author 1",
+        publicationName: "Pub 1",
+        readingTimeMinutes: 3,
+        contentMarkdown: "# Markdown 1",
+        isRead: false,
+        isSaved: false,
+        ingestedAt: "2026-09-01T10:00:00Z",
+      }).run();
+
+      db.insert(articles).values({
+        url: "https://example.com/item2",
+        title: "Item 2",
+        authorName: "Author 2",
+        publicationName: null,
+        readingTimeMinutes: 5,
+        contentMarkdown: "# Markdown 2",
+        isRead: true,
+        isSaved: false,
+        ingestedAt: "2026-09-03T10:00:00Z",
+      }).run();
+
+      db.insert(articles).values({
+        url: "https://example.com/item3",
+        title: "Item 3",
+        authorName: "Author 3",
+        publicationName: "Pub 3",
+        readingTimeMinutes: 7,
+        contentMarkdown: "# Markdown 3",
+        isRead: false,
+        isSaved: true,
+        ingestedAt: "2026-09-02T10:00:00Z",
+      }).run();
+
+      const results = listArticles(db);
+
+      expect(results).toHaveLength(3);
+      // Most recently ingested first: item2 (Sept 3), then item3 (Sept 2), then item1 (Sept 1)
+      expect(results[0].title).toBe("Item 2");
+      expect(results[1].title).toBe("Item 3");
+      expect(results[2].title).toBe("Item 1");
+
+      // Verify selected fields on first item
+      expect(results[0]).toEqual({
+        id: expect.any(Number),
+        title: "Item 2",
+        authorName: "Author 2",
+        publicationName: null,
+        readingTimeMinutes: 5,
+        isRead: true,
+        isSaved: false,
+      });
+
+      // Verify contentMarkdown is omitted
+      expect("contentMarkdown" in results[0]).toBe(false);
+      expect("contentMarkdown" in results[1]).toBe(false);
+      expect("contentMarkdown" in results[2]).toBe(false);
+    });
+  });
+
+  describe("getArticleById", () => {
+    it("returns full article row including contentMarkdown when found", () => {
+      const inserted = upsertArticle(db, {
+        url: "https://example.com/full-article",
+        title: "Full Article",
+        authorName: "Jane Doe",
+        publicationName: "Tech News",
+        readingTimeMinutes: 4,
+        contentMarkdown: "## Heading\n\nFull content goes here.",
+      }).row;
+
+      const found = getArticleById(db, inserted.id);
+      expect(found).toBeDefined();
+      expect(found?.id).toBe(inserted.id);
+      expect(found?.title).toBe("Full Article");
+      expect(found?.authorName).toBe("Jane Doe");
+      expect(found?.contentMarkdown).toBe("## Heading\n\nFull content goes here.");
+    });
+
+    it("returns undefined when article is not found", () => {
+      const found = getArticleById(db, 99999);
+      expect(found).toBeUndefined();
+    });
+  });
 });
+
 
