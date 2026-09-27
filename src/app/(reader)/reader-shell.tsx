@@ -14,7 +14,7 @@ export function ReaderShell({ children }: { children: ReactNode }) {
       <main
         className={`${
           isArticle ? "flex" : "hidden md:flex"
-        } flex-1 flex-col min-w-0 h-full overflow-auto bg-background
+        } flex-1 flex-col min-w-0 h-full overflow-auto scroll-smooth bg-background
           [scrollbar-width:thin] [scrollbar-color:transparent_transparent]
           hover:[scrollbar-color:var(--border)_transparent]
           [&::-webkit-scrollbar]:w-1.5

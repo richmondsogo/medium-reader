@@ -19,7 +19,7 @@ export function Sidebar({ className }: { className?: string } = {}) {
         <span className="font-sans text-[15px] font-medium text-foreground">Digest</span>
       </div>
       <div
-        className="flex-1 min-h-0 overflow-y-auto
+        className="flex-1 min-h-0 overflow-y-auto scroll-smooth
           [scrollbar-width:thin] [scrollbar-color:transparent_transparent]
           hover:[scrollbar-color:var(--border)_transparent]
           [&::-webkit-scrollbar]:w-1.5

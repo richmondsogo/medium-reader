@@ -4,7 +4,7 @@ Inspired by brianlovin.com/hn: dense, type-driven, no visual noise. The
 design does the least amount of stuff possible and still feels intentional.
 
 ## Fonts
-- **Inter** — single typeface for the entire application: article titles, headings,
+- **Hanken Grotesk** — single typeface for the entire application: article titles, headings,
   body text, blockquotes, sidebar, nav, buttons, metadata, bylines, dates, tags,
   and reading time. This is the default (`font-sans`, applied globally on `<html>`),
   so UI and article text inherit this font automatically.

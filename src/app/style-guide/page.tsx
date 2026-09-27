@@ -1,19 +1,19 @@
-import { Inter } from "next/font/google";
+import { Hanken_Grotesk } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const hankenGrotesk = Hanken_Grotesk({ subsets: ["latin"], variable: "--font-hanken-grotesk" });
 
 export default function StyleGuidePage() {
   return (
     <div
-      className={`min-h-screen bg-background text-foreground p-8 ${inter.variable}`}
+      className={`min-h-screen bg-background text-foreground p-8 ${hankenGrotesk.variable}`}
     >
       <div className="max-w-3xl mx-auto space-y-8">
         {/* Nav-style row */}
         <nav
-          className={`${inter.className} flex items-center justify-between py-4`}
+          className={`${hankenGrotesk.className} flex items-center justify-between py-4`}
         >
           <div className="font-semibold text-lg tracking-tight">
             Medium Reader
@@ -37,7 +37,7 @@ export default function StyleGuidePage() {
             Section Title (H3)
           </h3>
           <p className="text-lg leading-relaxed text-foreground">
-            This is a paragraph rendered in the Inter font. It
+            This is a paragraph rendered in the Hanken Grotesk font. It
             demonstrates the reading experience for the main article content.
             The design uses Tailwind CSS theme tokens like{" "}
             <code className="text-sm bg-muted text-muted-foreground px-1 py-0.5 rounded">
@@ -53,7 +53,7 @@ export default function StyleGuidePage() {
         </div>
 
         {/* Small UI text & Metadata */}
-        <div className={`${inter.className} space-y-2`}>
+        <div className={`${hankenGrotesk.className} space-y-2`}>
           <div className="text-sm text-muted-foreground">
             Published on September 26, 2026 • 5 min read
           </div>
@@ -65,7 +65,7 @@ export default function StyleGuidePage() {
         <Separator className="bg-border" />
 
         {/* UI Components */}
-        <div className={`${inter.className} space-y-6`}>
+        <div className={`${hankenGrotesk.className} space-y-6`}>
           <h2 className="text-xl font-semibold">UI Components</h2>
           <div className="flex space-x-4">
             <Button className="focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
