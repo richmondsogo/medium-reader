@@ -13,8 +13,8 @@ design does the least amount of stuff possible and still feels intentional.
 ## Color & theme
 - Dark-mode-first, near-black background (`oklch` low-lightness), matching
   the reference's #0a0a0a feel. Light mode is the alternate, not the default.
-- Follows OS preference strictly (`next-themes`, `defaultTheme="system"`,
-  `enableSystem`), with no manual toggle in the UI.
+- Follows OS preference strictly via pure CSS `prefers-color-scheme` media query,
+  with no manual toggle, no JS, and no localStorage persistence.
 - Tokens only: `background`, `foreground`, `muted`, `muted-foreground`,
   `border`, `accent`, plus shadcn's fuller set already in globals.css.
   Never hardcode a hex/oklch value in a component.
