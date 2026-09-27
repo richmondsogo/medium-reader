@@ -95,3 +95,62 @@ export function cleanArticleMarkdown(
 
   return result;
 }
+
+/**
+ * Detects residual Medium chrome markers that may have slipped past cleanArticleMarkdown.
+ *
+ * Scans markdown content for known noise patterns:
+ * 1. "caption-prompt": Image zoom/caption prompt variants (e.g. "view image in full size").
+ * 2. "profile-link": Author profile URLs (medium.com/@handle or handle.medium.com without story slug).
+ * 3. "reading-time": Isolated reading-time lines (e.g. "N min read", "*N mins read*").
+ * 4. "date-line": Standalone absolute or relative date lines (e.g. "Sep 16, 2026", "5 days ago").
+ * 5. "divider-line": Standalone "--", "\--", or dash divider lines.
+ *
+ * Returns an array of marker names found (empty array = clean). Does not modify content.
+ */
+export function detectResidualChromeMarkers(cleanedMarkdown: string): string[] {
+  if (!cleanedMarkdown) {
+    return [];
+  }
+  const markers: string[] = [];
+
+  // 1. Caption prompt variant
+  if (
+    /view image in full size/i.test(cleanedMarkdown) ||
+    /(?:press enter|click|tap)\s+(?:or\s+(?:click|tap)\s+)?to\s+view\s+(?:image\s+)?(?:in\s+)?full\s*size/i.test(cleanedMarkdown)
+  ) {
+    markers.push("caption-prompt");
+  }
+
+  // 2. Profile link (medium.com/@handle or handle.medium.com without article slug)
+  const profileLinkRegex =
+    /https?:\/\/(?:medium\.com\/@[a-zA-Z0-9._-]+|(?!miro|cdn-images)[a-zA-Z0-9-]+\.medium\.com)\/?(?:\?[^\s)>"]*)?(?=[)>"\s]|$)/i;
+  if (profileLinkRegex.test(cleanedMarkdown)) {
+    markers.push("profile-link");
+  }
+
+  // 3. Isolated reading-time line
+  if (
+    /^[ \t]*(?:[*_`~[\](]|·|•|-)?\s*\d+\s*(?:mins?|minutes?)\s*(?:read|reading)(?:\s*time)?\s*(?:[*_`~[\])]|·|•|-)?\s*$/im.test(
+      cleanedMarkdown
+    )
+  ) {
+    markers.push("reading-time");
+  }
+
+  // 4. Standalone date line
+  if (
+    /^[ \t]*(?:[*_`~[\](]|·|•|-)?\s*(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s+\d{4})?|\d{1,2}(?:st|nd|rd|th)?\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?(?:,?\s+\d{4})?|\d+\s+(?:days?|hours?|mins?|minutes?|weeks?|months?)\s+ago|yesterday|today)\s*(?:[*_`~[\])]|·|•|-)?\s*$/im.test(
+      cleanedMarkdown
+    )
+  ) {
+    markers.push("date-line");
+  }
+
+  // 5. Standalone divider line
+  if (/^[ \t]*(?:\\?--|\\?-\\?-|\\?[–—]{1,2})\s*$/im.test(cleanedMarkdown)) {
+    markers.push("divider-line");
+  }
+
+  return markers;
+}

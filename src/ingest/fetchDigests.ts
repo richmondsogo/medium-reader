@@ -6,6 +6,7 @@ import { startIngestRun, finishIngestRun, type FinishIngestRunParams } from "../
 import { isEmailProcessed, markEmailProcessed } from "../db/processedEmails";
 import { upsertArticle, type InsertArticle } from "../db/articles";
 import { parseDigest } from "./parseDigest";
+import { cleanArticleMarkdown, detectResidualChromeMarkers } from "../lib/cleanArticleMarkdown";
 
 export type HttpFetchDeps = { httpFetch: HttpFetchFn; freediumBaseUrls: string[] };
 
@@ -101,6 +102,20 @@ export async function fetchDigests(deps: FetchDigestsDeps): Promise<FinishIngest
             },
             httpFetchDeps
           );
+
+          if (extracted.fetchedVia === "direct") {
+            const cleaned = cleanArticleMarkdown(
+              extracted.contentMarkdown,
+              extracted.extractedTitle || article.title
+            );
+            const markers = detectResidualChromeMarkers(cleaned);
+            if (markers.length > 0) {
+              errorSummary.push({
+                context: article.url,
+                message: `Possible unrecognized Medium chrome: ${markers.join(", ")}`,
+              });
+            }
+          }
           
           const insertData: InsertArticle = {
             url: article.url,

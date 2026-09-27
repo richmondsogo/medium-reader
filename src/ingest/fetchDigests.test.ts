@@ -255,4 +255,47 @@ describe("fetchDigests orchestrator", () => {
     // 15 articles, should sleep 14 times
     expect(sleepCalls).toBe(14);
   });
+
+  it("f. Direct article with residual chrome markers records soft warning in errorSummary without failing", async () => {
+    const db = createDb(":memory:");
+    const imapClient = new FakeImapClient([{
+      uid: 1,
+      messageId: "test-msg-1",
+      rawBuffer,
+      date: fakeDate,
+    }]);
+    await imapClient.connect();
+
+    const fetchAndExtractArticle = async (url: string): Promise<ExtractedArticle> => {
+      return {
+        url,
+        contentMarkdown: "Click to view image in full size\n\nContent for " + url,
+        extractedTitle: "Title for " + url,
+        wordCount: 100,
+        fetchStatus: "ok",
+        fetchedVia: "direct",
+        fetchedAt: new Date().toISOString(),
+      };
+    };
+
+    const result = await fetchDigests({
+      imapClient,
+      db,
+      fetchAndExtractArticle,
+      httpFetchDeps: defaultHttpFetchDeps,
+      sleep: async () => {},
+      articleFetchDelayMs: 0,
+      lookbackDays: 14,
+    });
+
+    expect(result.status).toBe("success");
+    expect(result.articlesUpserted).toBe(15);
+    expect(result.articlesFailed).toBe(0);
+    expect(result.errorSummary).toBeDefined();
+
+    const errors = result.errorSummary as Array<{ context: string; message: string }>;
+    expect(errors.length).toBe(15);
+    expect(errors[0].message).toBe("Possible unrecognized Medium chrome: caption-prompt");
+  });
 });
+

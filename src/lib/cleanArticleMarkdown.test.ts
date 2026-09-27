@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { cleanArticleMarkdown } from "./cleanArticleMarkdown";
+import { cleanArticleMarkdown, detectResidualChromeMarkers } from "./cleanArticleMarkdown";
 
 describe("cleanArticleMarkdown", () => {
   it("removes duplicate title line with setext underline", () => {
@@ -198,3 +198,91 @@ Here is the conclusion.`;
     expect(cleaned).toBe(input);
   });
 });
+
+describe("detectResidualChromeMarkers", () => {
+  it("flags slightly-different caption phrasing that current cleanArticleMarkdown misses", () => {
+    // Current cleanArticleMarkdown requires verbatim "Press enter or click to view image in full size".
+    // A variant like "Click to view image in full size" slips past cleanArticleMarkdown.
+    const rawMarkdown = `Click to view image in full size
+
+![Illustration](https://miro.medium.com/v2/resize:fill:64:64/1*sample.png)
+
+This is the opening paragraph of an otherwise valid article.`;
+
+    const cleaned = cleanArticleMarkdown(rawMarkdown);
+    // Verifying it slipped past cleanArticleMarkdown:
+    expect(cleaned).toContain("Click to view image in full size");
+
+    // But detectResidualChromeMarkers detects the leaked variant:
+    const markers = detectResidualChromeMarkers(cleaned);
+    expect(markers).toEqual(["caption-prompt"]);
+  });
+
+  it("returns empty array for clean article prose and properly cleaned articles", () => {
+    const cleanProse = `This is a state-of-the-art analysis.
+
+It took me about 5 min to understand why this matters.
+Check out [this documentation](https://example.com/docs) for more details.
+
+Also see [an interesting story](https://medium.com/@author/how-to-code-well-1234abcd) by the same writer.
+
+On Sep 16, 2026, the team announced the release.
+
+---
+
+Here is the conclusion.`;
+
+    expect(detectResidualChromeMarkers(cleanProse)).toEqual([]);
+  });
+
+  it("returns empty array after cleanArticleMarkdown removes standard Medium chrome", () => {
+    const rawArticle99 = `Press enter or click to view image in full size
+
+[
+
+![Kelly Turner](https://miro.medium.com/v2/resize:fill:64:64/1*PmIHD5xqGCYO899Bn0_7Ag.jpeg)
+
+
+
+](https://kellyjoturner.medium.com/?source=post_page---byline--b452553462bf-----------------------------------------)
+
+15 min read
+
+Sep 16, 2026
+
+\\--
+
+_I thought I was building a library. I think I was actually trying to figure out how humanity remembers._
+
+This is the third part of a series about a question I have become increasingly unable to ignore.`;
+
+    const cleaned = cleanArticleMarkdown(
+      rawArticle99,
+      "Maybe the Solution to AI Is More Human Than We Think"
+    );
+    expect(detectResidualChromeMarkers(cleaned)).toEqual([]);
+  });
+
+  it("detects other residual noise patterns when present", () => {
+    // Residual reading time variant
+    expect(
+      detectResidualChromeMarkers("Some intro\n\n*5 mins read*\n\nSome body text.")
+    ).toEqual(["reading-time"]);
+
+    // Residual standalone date variant
+    expect(
+      detectResidualChromeMarkers("Some intro\n\n*Sep 16, 2026*\n\nSome body text.")
+    ).toEqual(["date-line"]);
+
+    // Residual divider line variant
+    expect(
+      detectResidualChromeMarkers("Some intro\n\n––\n\nSome body text.")
+    ).toEqual(["divider-line"]);
+
+    // Residual profile link variant (e.g. angle bracketed or unstripped)
+    expect(
+      detectResidualChromeMarkers("Some intro\n\n<https://medium.com/@johndoe>\n\nSome body text.")
+    ).toEqual(["profile-link"]);
+  });
+});
+

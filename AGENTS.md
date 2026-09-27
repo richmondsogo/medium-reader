@@ -31,6 +31,14 @@ pnpm dev | build | lint | typecheck | test | check (lint+typecheck+test)
 - All text styling goes through src/components/ui/typography.tsx. No
   component may specify its own font-size/weight/line-height - enforced by
   ESLint. If a new text role is needed, add it to typography.tsx first.
+- New Medium chrome variants surface as soft warnings in fetch-digests's
+  errorSummary output, not as silent rendering bugs. When one appears, add a rule
+  to cleanArticleMarkdown.ts and a matching test case.
+- For a gnarly/uncertain regex (e.g. nested-bracket markdown matching):
+  prototype it in a standalone throwaway script (scratch-<name>.js, outside the
+  test suite) against real examples first, confirm it works, THEN move the
+  finalized pattern into the real module and delete the scratch file before
+  committing. Don't write a complex regex directly into production code untested.
 
 ## Simplicity and surgical changes (IMPORTANT)
 
