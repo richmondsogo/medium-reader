@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 import { env } from "@/lib/env";
 import { createDb } from "@/db/client";
 import { getArticleById } from "@/db/articles";
@@ -9,6 +9,7 @@ import {
   ArticleHeading3,
   ArticleBody,
   ArticleBlockquote,
+  Meta,
 } from "@/components/ui/typography";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -56,11 +57,23 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
 
       <header className="mb-12 space-y-4">
         <ArticleTitle>{article.title ?? "Untitled"}</ArticleTitle>
-        <div className="font-sans text-sm text-muted-foreground">
-          {article.authorName}
-          {article.publicationName && ` in ${article.publicationName}`}
-          {article.readingTimeMinutes != null && ` · ${article.readingTimeMinutes} min read`}
-        </div>
+        <Meta as="div" className="flex items-center gap-1.5">
+          <span>
+            {article.authorName}
+            {article.publicationName && ` in ${article.publicationName}`}
+            {article.readingTimeMinutes != null && ` · ${article.readingTimeMinutes} min read`}
+          </span>
+          <a
+            href={article.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors"
+            title="Open original article"
+            aria-label="Open original article"
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+          </a>
+        </Meta>
       </header>
 
       <ArticleBody
