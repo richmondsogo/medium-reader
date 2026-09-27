@@ -1,24 +1,11 @@
-"use client";
-
-import { useTheme } from "next-themes";
 import { Inter } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useEffect, useState } from "react";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function StyleGuidePage() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  // Avoid hydration mismatch
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-  }, []);
-
   return (
     <div
       className={`min-h-screen bg-background text-foreground p-8 ${inter.variable}`}
@@ -33,16 +20,6 @@ export default function StyleGuidePage() {
           </div>
           <div className="flex items-center space-x-4">
             <span className="text-sm text-muted-foreground">Style Guide</span>
-            {mounted && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                Toggle {theme === "dark" ? "Light" : "Dark"}
-              </Button>
-            )}
           </div>
         </nav>
 
