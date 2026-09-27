@@ -28,7 +28,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
   }
 
   return (
-    <article className="mx-auto w-full max-w-[720px] py-12 px-5 md:px-8 lg:px-12">
+    <article className="mx-auto w-full max-w-[720px] py-12 px-6">
       <div className="mb-8 md:hidden">
         <Link
           href="/"
