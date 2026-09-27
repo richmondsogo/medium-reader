@@ -40,7 +40,9 @@ export function Sidebar({ className }: { className?: string } = {}) {
                 <Link
                   href={href}
                   className={`block mx-2 rounded-lg px-4 py-3 transition-colors ${
-                    isSelected ? "bg-muted/60" : "hover:bg-muted/40"
+                    isSelected
+                      ? "bg-muted/60 shadow-elevated"
+                      : "hover:bg-muted/40 hover:shadow-elevated"
                   }`}
                 >
                   <TitleComponent className="block line-clamp-2 text-foreground mb-2.5">

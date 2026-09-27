@@ -29,6 +29,7 @@ design does the least amount of stuff possible and still feels intentional.
 - One radius value, used everywhere or nowhere.
 - Spacing: Tailwind's default 4px scale only. No arbitrary pixel values.
 - Heading-to-subtext gap: standard gap between a title/heading and its accompanying meta/subtext row is `mb-2.5` (10px on Tailwind's 4px scale).
+- Scroll isolation: document and body level scrolling is fully locked (`h-full overflow-hidden`). Only the sidebar list container and the reader pane's `<main>` scroll independently (`overflow-y-auto min-h-0`).
 
 ## Motion & interaction
 - Transitions: ~120ms, opacity/transform only, used sparingly.
@@ -36,9 +37,12 @@ design does the least amount of stuff possible and still feels intentional.
 - Sidebar hover/selected states are shown via background AND text color
   together, never color alone. Rows use an inset rounded highlight (`mx-2 rounded-lg`)
   with `bg-muted/60` (selected) and `hover:bg-muted/40` (hover), without hard-edged accent borders.
+- Dark mode elevated shadow (`shadow-elevated`): in dark mode only (`prefers-color-scheme: dark`),
+  selected and hovered sidebar rows apply a subtle inset contrast shadow (`inset 0 0 0 0.5px rgba(255,255,255,0.04), inset 0 0.5px 0 0 rgba(255,255,255,0.04), 0 1px 3px 0 rgba(0,0,0,0.4)`),
+  providing tactile bevel definition. In light mode, this evaluates to `none` (zero shadow change).
 
 ## Non-goals for now
-No cards, no shadows, no decorative icons, no thumbnails in the list. If
+No cards, no decorative outer shadows, no decorative icons, no thumbnails in the list. If
 something is tempting to add "for polish," check the reference first — it
 almost certainly does less, not more.
 
