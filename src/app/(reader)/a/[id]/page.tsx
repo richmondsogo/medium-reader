@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/typography";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { rewriteImageUrl } from "@/lib/rewriteImageUrl";
 import { MarkReadOnView } from "./mark-read-on-view";
 
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
@@ -97,6 +98,17 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
             h3: ({ node, ...props }) => <ArticleHeading3 {...props} />,
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             blockquote: ({ node, ...props }) => <ArticleBlockquote {...props} />,
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            img: ({ node, src, alt, ...props }) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={typeof src === "string" ? rewriteImageUrl(src) : undefined}
+                alt={alt ?? ""}
+                loading="lazy"
+                className="rounded-md max-w-full h-auto my-6"
+                {...props}
+              />
+            ),
           }}
         >
           {article.contentMarkdown}
