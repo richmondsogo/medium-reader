@@ -3,14 +3,21 @@
 import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "./sidebar";
+import type { SidebarArticle } from "@/db/articles";
 
-export function ReaderShell({ children }: { children: ReactNode }) {
+export function ReaderShell({
+  children,
+  articles,
+}: {
+  children: ReactNode;
+  articles: SidebarArticle[];
+}) {
   const pathname = usePathname();
   const isArticle = pathname.startsWith("/a/");
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background">
-      <Sidebar className={isArticle ? "hidden md:flex" : "flex"} />
+      <Sidebar articles={articles} className={isArticle ? "hidden md:flex" : "flex"} />
       <main
         className={`${
           isArticle ? "flex" : "hidden md:flex"

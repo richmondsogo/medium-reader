@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { dummyArticles } from "@/lib/dummy-articles";
+import { env } from "@/lib/env";
+import { createDb } from "@/db/client";
+import { getArticleById } from "@/db/articles";
 import {
   ArticleTitle,
   ArticleHeading2,
@@ -14,7 +16,20 @@ import remarkGfm from "remark-gfm";
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   const id = parseInt(resolvedParams.id, 10);
-  const article = dummyArticles.find((a) => a.id === id);
+
+  if (isNaN(id)) {
+    return (
+      <div className="flex h-full items-center justify-center p-8 text-center">
+        <div className="max-w-md space-y-4">
+          <h2 className="font-sans text-xl font-bold">Article not found</h2>
+          <p className="text-muted-foreground">The article you are looking for does not exist or has been removed.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const db = createDb(env.DATABASE_PATH);
+  const article = getArticleById(db, id);
 
   if (!article) {
     return (
@@ -40,12 +55,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
       </div>
 
       <header className="mb-12 space-y-4">
-        <ArticleTitle>{article.title}</ArticleTitle>
+        <ArticleTitle>{article.title ?? "Untitled"}</ArticleTitle>
         <div className="font-sans text-sm text-muted-foreground">
           {article.authorName}
           {article.publicationName && ` in ${article.publicationName}`}
-          {" · "}
-          {article.readingTimeMinutes} min read
+          {article.readingTimeMinutes != null && ` · ${article.readingTimeMinutes} min read`}
         </div>
       </header>
 

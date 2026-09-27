@@ -2,11 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { dummyArticles } from "@/lib/dummy-articles";
+import type { SidebarArticle } from "@/db/articles";
 import { ListItemTitle, ListItemTitleSelected, Meta } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 
-export function Sidebar({ className }: { className?: string } = {}) {
+export function Sidebar({
+  articles,
+  className,
+}: {
+  articles: SidebarArticle[];
+  className?: string;
+}) {
   const pathname = usePathname();
 
   return (
@@ -30,7 +36,7 @@ export function Sidebar({ className }: { className?: string } = {}) {
           [&::-webkit-scrollbar-track]:bg-transparent"
       >
         <ul className="flex flex-col gap-1 p-2 list-none m-0">
-          {dummyArticles.map((article) => {
+          {articles.map((article) => {
             const href = `/a/${article.id}`;
             const isSelected = pathname === href;
             const TitleComponent = isSelected ? ListItemTitleSelected : ListItemTitle;
