@@ -46,6 +46,12 @@ No cards, no decorative outer shadows, no decorative icons, no thumbnails in the
 something is tempting to add "for polish," check the reference first — it
 almost certainly does less, not more.
 
+## Identity
+- The app name is **Daybreak** and lives in `src/lib/brand.ts`.
+- The UI shows the app name as text only via the `<Wordmark>` component in the sidebar header; no logo, mark, or decorative icon is used anywhere in the reader UI.
+- The only graphic in the application is `src/app/icon.svg` (the tab icon), which is the single place where hardcoded hex colors are allowed.
+- Article URLs come from `articlePath()` in `src/lib/routes.ts`.
+
 ## Typography system
 - All text elements must route through <typography.tsx> wrapper components (e.g., <ArticleTitle>, <Meta>).  
 - No component may specify its own ont-size, ont-weight, or line-height. This is enforced by ESLint.

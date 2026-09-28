@@ -44,6 +44,9 @@ pnpm dev | build | lint | typecheck | test | check (lint+typecheck+test)
   piping Node output through Tee-Object or similar displays UTF-8 as mojibake
   (’ as ΓÇÖ). Stored data is unaffected. Set [Console]::OutputEncoding =
   [System.Text.Encoding]::UTF8 before piping, or verify with escaped output.
+- Article URLs are built with articlePath() from src/lib/routes.ts, never
+  string-concatenated; the routing guard test enforces this. The app name comes
+  from src/lib/brand.ts.
 
 ## Simplicity and surgical changes (IMPORTANT)
 
