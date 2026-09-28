@@ -24,6 +24,7 @@ pnpm dev | build | lint | typecheck | test | check (lint+typecheck+test)
   Network and IMAP access sit behind interfaces so they can be faked in tests.
 - Validate all external input (env, email content, fetched HTML) with zod.
 - Never log secrets. Never commit .env. Config comes only from src/lib/env.ts.
+- src/app and src/components never import ingest-env; the web side reads only DATABASE_PATH and LOG_LEVEL.
 - Tests are colocated as *.test.ts. Parsers are tested against files in fixtures/.
 - No new dependency without asking the user first and justifying it.
 - All database access goes through src/db/*.ts repository functions -

@@ -50,3 +50,12 @@
 
 4. **Security & Deployment**:
    Deployed strictly on a private network (e.g. Tailscale) with no public exposure and no external auth layer needed. Markdown rendering disallows raw HTML to prevent injection vulnerabilities.
+
+## Running in Production
+
+The production system runs the built Next.js application rather than the development server:
+
+1. **Web Runtime**: The web server runs via `pnpm build && pnpm start`. Reader routes use dynamic rendering (`export const dynamic = "force-dynamic"`) so newly ingested articles and reading state mutations render on each request without a rebuild. The web process reads only `DATABASE_PATH` and `LOG_LEVEL`, holding no mail credentials.
+2. **Ingest Runtime**: Ingestion (`pnpm fetch-digests`) runs as a separate cron process using `src/lib/ingest-env.ts` (which holds Gmail IMAP credentials).
+3. **Database Concurrency**: The web process and CLI processes share the SQLite file concurrently via Write-Ahead Logging (`PRAGMA journal_mode = WAL`). The web process reuses a single cached connection (`getDb()`), while CLIs instantiate short-lived connections (`createDb`).
+
