@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import * as cheerio from "cheerio";
-import { extractSubtitle } from "./extractSubtitle";
+import { extractSubtitle, validateSubtitle } from "./extractSubtitle";
 import { extractArticleContent } from "./extractArticleContent";
 import { cleanArticleMarkdown } from "../lib/cleanArticleMarkdown";
 
@@ -109,6 +109,61 @@ describe("extractSubtitle", () => {
       expect(res).toEqual({ subtitle: "", reason: "duplicate-of-title" });
     });
 
+    it("returns 'boilerplate' when candidate matches Medium's default description", () => {
+      // Row #93 real candidate
+      const res93 = validateSubtitle({
+        candidate: "“” is published by Roan Brasil Monteiro.",
+        title: "Building a Complete Personal Harness: LLM Wiki + Developer’s Second Brain in Obsidian",
+      });
+      expect(res93).toEqual({ subtitle: "", reason: "boilerplate" });
+
+      const resGeneric = validateSubtitle({
+        candidate: "“Understanding Distributed Systems” is published by Alex Petrov.",
+        title: "Understanding Distributed Systems",
+      });
+      expect(resGeneric).toEqual({ subtitle: "", reason: "boilerplate" });
+    });
+
+    it("accepts legitimate subtitles containing 'published' and 'by'", () => {
+      const res1 = validateSubtitle({
+        candidate: "Published by industry experts, this guide explains modern distributed systems.",
+        title: "A Modern Architecture Guide",
+      });
+      expect(res1).toEqual({
+        subtitle: "Published by industry experts, this guide explains modern distributed systems.",
+        reason: "ok",
+      });
+
+      const res2 = validateSubtitle({
+        candidate: "Articles published by independent researchers are shaping modern AI safety.",
+        title: "The Future of AI Safety",
+      });
+      expect(res2).toEqual({
+        subtitle: "Articles published by independent researchers are shaping modern AI safety.",
+        reason: "ok",
+      });
+    });
+
+    it("returns 'truncated' when candidate ends in ellipsis (U+2026 or ...)", () => {
+      const resUnicode = validateSubtitle({
+        candidate: "In my previous article, I explained how to integrate GCP Secret Manager…",
+        title: "GCP Secret Manager Guide",
+      });
+      expect(resUnicode).toEqual({ subtitle: "", reason: "truncated" });
+
+      const resDots = validateSubtitle({
+        candidate: "In my previous article, I explained how to integrate GCP Secret Manager...",
+        title: "GCP Secret Manager Guide",
+      });
+      expect(resDots).toEqual({ subtitle: "", reason: "truncated" });
+
+      const resTrailingWhitespace = validateSubtitle({
+        candidate: "Another excerpt with trailing whitespace ...   ",
+        title: "Testing Whitespace",
+      });
+      expect(resTrailingWhitespace).toEqual({ subtitle: "", reason: "truncated" });
+    });
+
     it("returns 'too-long' when candidate exceeds 200 characters", () => {
       const longText = "A".repeat(201);
       const html = `
@@ -144,9 +199,9 @@ describe("extractSubtitle", () => {
       expect(res).toEqual({ subtitle: "", reason: "duplicate-of-body" });
     });
 
-    it("returns 'duplicate-of-body' when candidate has leading title and trailing ellipsis matching body opening", () => {
+    it("returns 'duplicate-of-body' when candidate has leading title matching body opening", () => {
       const bodyOpening = "For the longest time, I wanted to travel to India. I came close on many occasions.";
-      const candidateWithChrome = `My Great Trip ${bodyOpening}…`;
+      const candidateWithChrome = `My Great Trip ${bodyOpening}`;
 
       const html = `
         <html>
@@ -161,6 +216,21 @@ describe("extractSubtitle", () => {
         html,
         via: "direct",
         title: "My Great Trip",
+        bodyMarkdown,
+      });
+
+      expect(res).toEqual({ subtitle: "", reason: "duplicate-of-body" });
+    });
+
+    it("returns 'duplicate-of-body' for #191 verbatim body excerpt containing markdown links and backticks", () => {
+      // Verbatim excerpt from article #191
+      const bodyMarkdown = `> In my [previous article](https://medium.com/stackademic/how-to-add-gcp-secrets-in-a-spring-boot-application-using-the-gcp-secret-manager-dependency-6e4b43bd4afb), I explained how to integrate GCP Secret Manager with a Spring Boot application using the \`spring-cloud-gcp-starter-secretmanager\` dependency. It provided a clean, declarative approach to injecting secrets directly into \`@Value\` annotations or configuration properties.`;
+      const candidate = "In my previous article, I explained how to integrate GCP Secret Manager with a Spring Boot application using the";
+      const title = "Why we switched to the GCP Secret Manager API in Spring Boot and What we learned?";
+
+      const res = validateSubtitle({
+        candidate,
+        title,
         bodyMarkdown,
       });
 
