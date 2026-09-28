@@ -14,7 +14,8 @@
     "fetch-digests": "tsx src/cli/fetch-digests.ts",
     "purge-old-articles": "tsx src/cli/purge-old-articles.ts",
     "inspect-db": "tsx src/cli/inspect-db.ts",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "backfill-subtitles": "tsx src/cli/backfill-subtitles.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
