@@ -65,14 +65,6 @@ function ResilientImage({
   const timerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const handledAttemptRef = React.useRef<number>(-1);
 
-  React.useEffect(() => {
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, []);
-
   const handleError = React.useCallback(() => {
     if (handledAttemptRef.current === retryCount) {
       return;
@@ -94,13 +86,17 @@ function ResilientImage({
 
   React.useEffect(() => {
     const img = imgRef.current;
-    if (!img) return;
-
-    // Detect pre-hydration failures: if the image finished loading before hydration
-    // and naturalWidth is 0, the browser's error event fired before React attached onError.
-    if (img.complete && img.naturalWidth === 0) {
+    if (img && img.complete && img.naturalWidth === 0) {
       handleError();
     }
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+      handledAttemptRef.current = -1;
+    };
   }, [retryCount, handleError]);
 
   if (hasFailed) {
