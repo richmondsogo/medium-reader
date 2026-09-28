@@ -68,6 +68,20 @@ describe("db/articles", () => {
       expect(res.row.contentMarkdown).toBe("new content");
     });
 
+    it("preserves existing non-null subtitle when update provides null or undefined subtitle", () => {
+      upsertArticle(db, { ...baseArticle, subtitle: "Original Subtitle" });
+      const res = upsertArticle(db, { ...baseArticle, contentMarkdown: "new content", subtitle: null });
+      expect(res.action).toBe("updated");
+      expect(res.row.subtitle).toBe("Original Subtitle");
+    });
+
+    it("updates subtitle when update provides a new non-null subtitle", () => {
+      upsertArticle(db, { ...baseArticle, subtitle: "Old Subtitle" });
+      const res = upsertArticle(db, { ...baseArticle, contentMarkdown: "new content", subtitle: "New Subtitle" });
+      expect(res.action).toBe("updated");
+      expect(res.row.subtitle).toBe("New Subtitle");
+    });
+
     it("throws on raw duplicate url insert", () => {
       upsertArticle(db, baseArticle);
       expect(() => {

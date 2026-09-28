@@ -54,6 +54,7 @@ export type ExtractedArticle = {
   contentMarkdown: string;
   extractedTitle?: string;
   extractedByline?: string;
+  subtitle?: string | null;
   wordCount: number;
   fetchStatus: FetchStatus;
   fetchedVia: "direct" | "freedium-mirror" | "freedium" | "none";

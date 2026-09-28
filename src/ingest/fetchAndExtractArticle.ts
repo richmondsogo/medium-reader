@@ -1,6 +1,8 @@
 import { fetchArticleHtml } from "./fetchArticleHtml";
 import { extractArticleContent } from "./extractArticleContent";
 import { assessCompleteness } from "./completeness";
+import { extractSubtitle } from "./extractSubtitle";
+import { cleanArticleMarkdown } from "../lib/cleanArticleMarkdown";
 import type { HttpFetchFn } from "./httpFetch";
 import type { ExtractedArticle, ArticleLink } from "./types";
 
@@ -21,6 +23,7 @@ export async function fetchAndExtractArticle(
       contentMarkdown,
       extractedTitle: fallback.title,
       extractedByline: fallback.authorName,
+      subtitle: null,
       wordCount,
       fetchStatus: "failed",
       fetchedVia: "none",
@@ -32,11 +35,21 @@ export async function fetchAndExtractArticle(
   const fetchStatus = completeness === "complete" ? "ok" : "partial";
   const extracted = extractArticleContent(result.html, url);
 
+  const titleForCleaning = fallback.title || extracted.title || "";
+  const cleanedBody = cleanArticleMarkdown(extracted.contentMarkdown, titleForCleaning);
+  const subtitleResult = extractSubtitle({
+    html: result.html,
+    via: result.via,
+    title: titleForCleaning,
+    bodyMarkdown: cleanedBody,
+  });
+
   return {
     url,
     contentMarkdown: extracted.contentMarkdown,
     extractedTitle: extracted.title,
     extractedByline: extracted.byline,
+    subtitle: subtitleResult.subtitle,
     wordCount: extracted.wordCount,
     fetchStatus,
     fetchedVia: result.via,

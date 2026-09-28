@@ -32,6 +32,10 @@ export function upsertArticle(db: DbClient, article: InsertArticle) {
         authorHandle: article.authorHandle,
         publicationName: article.publicationName,
         snippet: article.snippet,
+        subtitle:
+          article.subtitle !== null && article.subtitle !== undefined
+            ? article.subtitle
+            : existing.subtitle,
         contentMarkdown: article.contentMarkdown,
         wordCount: article.wordCount,
         readingTimeMinutes: article.readingTimeMinutes,

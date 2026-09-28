@@ -124,6 +124,7 @@ export async function fetchDigests(deps: FetchDigestsDeps): Promise<FinishIngest
             authorHandle: article.authorHandle,
             publicationName: article.publicationName,
             snippet: article.snippet,
+            subtitle: extracted.subtitle,
             contentMarkdown: extracted.contentMarkdown,
             readingTimeMinutes: article.readingTimeMinutes,
             memberOnly: article.memberOnly,
