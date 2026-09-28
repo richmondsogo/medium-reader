@@ -13,7 +13,8 @@
     "check": "pnpm lint && pnpm typecheck && pnpm test",
     "fetch-digests": "tsx src/cli/fetch-digests.ts",
     "purge-old-articles": "tsx src/cli/purge-old-articles.ts",
-    "inspect-db": "tsx src/cli/inspect-db.ts"
+    "inspect-db": "tsx src/cli/inspect-db.ts",
+    "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

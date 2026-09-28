@@ -1,4 +1,4 @@
-import { eq, lt, and, count, desc, SQL } from "drizzle-orm";
+import { eq, lt, and, count, desc, asc, isNull, SQL } from "drizzle-orm";
 import { articles } from "./schema";
 import type { DbClient } from "./client";
 
@@ -117,5 +117,29 @@ export function getArticleById(db: DbClient, id: number) {
     .from(articles)
     .where(eq(articles.id, id))
     .get();
+}
+
+export function setArticleSubtitle(db: DbClient, id: number, subtitle: string) {
+  return db
+    .update(articles)
+    .set({ subtitle, updatedAt: new Date().toISOString() })
+    .where(eq(articles.id, id))
+    .returning()
+    .get();
+}
+
+export function listArticlesMissingSubtitle(db: DbClient) {
+  return db
+    .select({
+      id: articles.id,
+      url: articles.url,
+      title: articles.title,
+      snippet: articles.snippet,
+      fetchedVia: articles.fetchedVia,
+    })
+    .from(articles)
+    .where(isNull(articles.subtitle))
+    .orderBy(asc(articles.id))
+    .all();
 }
 

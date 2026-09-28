@@ -9,6 +9,7 @@ export const articles = sqliteTable("articles", {
   authorHandle: text("authorHandle"),
   publicationName: text("publicationName"),
   snippet: text("snippet"),
+  subtitle: text("subtitle"),
   contentMarkdown: text("contentMarkdown").notNull(),
   wordCount: integer("wordCount"),
   readingTimeMinutes: integer("readingTimeMinutes"),

@@ -9,6 +9,8 @@ import {
   getFetchStatusRank,
   listArticles,
   getArticleById,
+  setArticleSubtitle,
+  listArticlesMissingSubtitle,
   type InsertArticle,
 } from "./articles";
 import { articles } from "./schema";
@@ -232,6 +234,84 @@ describe("db/articles", () => {
     it("returns undefined when article is not found", () => {
       const found = getArticleById(db, 99999);
       expect(found).toBeUndefined();
+    });
+  });
+
+  describe("setArticleSubtitle", () => {
+    it("updates subtitle and updatedAt", () => {
+      const inserted = upsertArticle(db, {
+        url: "https://example.com/subtitle-test",
+        title: "Subtitle Test",
+        contentMarkdown: "Content",
+      }).row;
+
+      expect(inserted.subtitle).toBeNull();
+
+      const updated = setArticleSubtitle(db, inserted.id, "A real subtitle");
+      expect(updated.subtitle).toBe("A real subtitle");
+      expect(updated.updatedAt).toBeDefined();
+
+      const updatedEmpty = setArticleSubtitle(db, inserted.id, "");
+      expect(updatedEmpty.subtitle).toBe("");
+    });
+  });
+
+  describe("listArticlesMissingSubtitle", () => {
+    it("returns only articles where subtitle is NULL, ordered by id ASC, selecting only specified fields", () => {
+      const art1 = upsertArticle(db, {
+        url: "https://example.com/missing-1",
+        title: "Article 1",
+        snippet: "Snippet 1",
+        contentMarkdown: "Content 1",
+        fetchedVia: "direct",
+      }).row;
+
+      const art2 = upsertArticle(db, {
+        url: "https://example.com/missing-2",
+        title: "Article 2",
+        snippet: "Snippet 2",
+        contentMarkdown: "Content 2",
+        fetchedVia: "freedium-mirror",
+      }).row;
+
+      upsertArticle(db, {
+        url: "https://example.com/has-empty-subtitle",
+        title: "Article 3",
+        snippet: "Snippet 3",
+        subtitle: "",
+        contentMarkdown: "Content 3",
+        fetchedVia: "direct",
+      });
+
+      upsertArticle(db, {
+        url: "https://example.com/has-real-subtitle",
+        title: "Article 4",
+        snippet: "Snippet 4",
+        subtitle: "Existing Subtitle",
+        contentMarkdown: "Content 4",
+        fetchedVia: "freedium",
+      });
+
+      const missing = listArticlesMissingSubtitle(db);
+      expect(missing).toHaveLength(2);
+      expect(missing[0]).toEqual({
+        id: art1.id,
+        url: "https://example.com/missing-1",
+        title: "Article 1",
+        snippet: "Snippet 1",
+        fetchedVia: "direct",
+      });
+      expect(missing[1]).toEqual({
+        id: art2.id,
+        url: "https://example.com/missing-2",
+        title: "Article 2",
+        snippet: "Snippet 2",
+        fetchedVia: "freedium-mirror",
+      });
+
+      // Verify contentMarkdown is omitted
+      expect("contentMarkdown" in missing[0]).toBe(false);
+      expect("contentMarkdown" in missing[1]).toBe(false);
     });
   });
 });
