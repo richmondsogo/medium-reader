@@ -17,6 +17,7 @@ import remarkGfm from "remark-gfm";
 import { ArticleImage } from "@/components/article-image";
 import { rewriteImageUrl } from "@/lib/rewriteImageUrl";
 import { cleanArticleMarkdown } from "@/lib/cleanArticleMarkdown";
+import { getDisplaySubtitle } from "@/lib/getDisplaySubtitle";
 import { MarkReadOnView } from "./mark-read-on-view";
 
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
@@ -48,6 +49,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
     );
   }
 
+  const displaySubtitle = getDisplaySubtitle(article);
+
   return (
     <article className="mx-auto w-full max-w-[720px] py-12 px-6">
       <MarkReadOnView id={article.id} isRead={article.isRead} />
@@ -63,8 +66,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
 
       <header className="mb-12 space-y-4">
         <ArticleTitle>{article.title ?? "Untitled"}</ArticleTitle>
-        {article.snippet?.trim() ? (
-          <ArticleSubtitle>{article.snippet.trim()}</ArticleSubtitle>
+        {displaySubtitle ? (
+          <ArticleSubtitle>{displaySubtitle}</ArticleSubtitle>
         ) : null}
         <Meta as="div" className="flex items-center gap-1.5">
           <span>
