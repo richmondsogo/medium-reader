@@ -39,6 +39,10 @@ pnpm dev | build | lint | typecheck | test | check (lint+typecheck+test)
   test suite) against real examples first, confirm it works, THEN move the
   finalized pattern into the real module and delete the scratch file before
   committing. Don't write a complex regex directly into production code untested.
+- PowerShell re-decodes piped output with the console code page (437), so
+  piping Node output through Tee-Object or similar displays UTF-8 as mojibake
+  (’ as ΓÇÖ). Stored data is unaffected. Set [Console]::OutputEncoding =
+  [System.Text.Encoding]::UTF8 before piping, or verify with escaped output.
 
 ## Simplicity and surgical changes (IMPORTANT)
 
