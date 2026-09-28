@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans, Geist_Mono } from "next/font/google";
+import { APP_NAME } from "@/lib/brand";
 import "./globals.css";
 
 const ibmPlexSans = IBM_Plex_Sans({
@@ -16,8 +17,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Medium Reader",
-  description: "Personal Medium article reader",
+  title: {
+    default: APP_NAME,
+    template: `%s · ${APP_NAME}`,
+  },
+  description: "A calm reader for your daily Medium digest.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

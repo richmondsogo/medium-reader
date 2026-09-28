@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { SidebarArticle } from "@/db/articles";
-import { ListItemTitle, ListItemTitleSelected, Meta } from "@/components/ui/typography";
+import { ListItemTitle, ListItemTitleSelected, Meta, Wordmark } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { articlePath } from "@/lib/routes";
+import { APP_NAME } from "@/lib/brand";
 
 export function Sidebar({
   articles,
@@ -23,8 +24,13 @@ export function Sidebar({
         className
       )}
     >
-      <div className="sticky top-0 z-20 flex h-14 items-center gap-1 px-3 border-b bg-background shrink-0">
-        <span className="font-sans text-[15px] font-medium text-foreground">Digest</span>
+      <div className="sticky top-0 z-20 flex h-14 items-center px-8 border-b bg-background shrink-0">
+        <Link
+          href="/"
+          className="rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-foreground"
+        >
+          <Wordmark>{APP_NAME}</Wordmark>
+        </Link>
       </div>
       <div
         className="flex-1 min-h-0 overflow-y-auto scroll-smooth

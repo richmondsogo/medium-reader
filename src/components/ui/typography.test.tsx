@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { ListItemTitle, ListItemTitleSelected, ArticleSubtitle } from "./typography";
+import { ListItemTitle, ListItemTitleSelected, ArticleSubtitle, Wordmark } from "./typography";
 
 describe("typography - ListItemTitle", () => {
   it("renders with text-foreground by default when isRead is false", () => {
@@ -38,3 +38,12 @@ describe("typography - ArticleSubtitle", () => {
     expect(html).toContain("Teaser text snippet");
   });
 });
+
+describe("typography - Wordmark", () => {
+  it("renders the given text and has the lowercase class", () => {
+    const html = renderToStaticMarkup(<Wordmark>Daybreak</Wordmark>);
+    expect(html).toContain("Daybreak");
+    expect(html).toContain("lowercase");
+  });
+});
+

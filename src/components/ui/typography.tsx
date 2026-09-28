@@ -20,6 +20,7 @@ export const typographyVariants = cva(
         "ui-label-small": "font-sans text-[12px] font-semibold",
         "inline-code": "font-mono text-[13px] text-muted-foreground bg-muted px-1 py-0.5 rounded",
         "article-blockquote": "border-l-2 border-border pl-5 italic text-muted-foreground my-8 text-[19px] leading-[1.7]",
+        "brand": "font-sans text-[17px] font-semibold tracking-tight leading-none lowercase text-foreground",
       }
     }
   }
@@ -109,3 +110,8 @@ export function InlineCode({ className, as: Component = "code", ...props }: Reac
 export function UiLabelSmall({ className, as: Component = "span", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
   return <Component className={cn(typographyVariants({ variant: "ui-label-small" }), className)} {...props} />
 }
+
+export function Wordmark({ className, as: Component = "span", ...props }: React.HTMLAttributes<HTMLElement> & { as?: React.ElementType }) {
+  return <Component className={cn(typographyVariants({ variant: "brand" }), className)} {...props} />
+}
+

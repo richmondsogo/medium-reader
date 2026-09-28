@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { getDb } from "@/db/instance";
 import { getArticleById } from "@/db/articles";
@@ -20,6 +21,21 @@ import { getDisplaySubtitle } from "@/lib/getDisplaySubtitle";
 import { MarkReadOnView } from "./mark-read-on-view";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const resolvedParams = await params;
+  const id = parseInt(resolvedParams.id, 10);
+  if (isNaN(id)) {
+    return { title: "Article not found" };
+  }
+  const db = getDb();
+  const article = getArticleById(db, id);
+  return { title: article?.title ?? "Article not found" };
+}
 
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
