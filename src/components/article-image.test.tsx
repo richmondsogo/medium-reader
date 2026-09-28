@@ -10,6 +10,7 @@ import {
   getNextRetryDelay,
   MAX_IMAGE_RETRIES,
   RETRY_DELAYS,
+  sanitizeAlt,
 } from "./article-image";
 
 // @ts-expect-error test environment global
@@ -76,6 +77,52 @@ describe("article-image - component rendering", () => {
     const htmlWithoutAlt = renderToStaticMarkup(<ImageFallback />);
     expect(htmlWithoutAlt).toContain('aria-label="Image unavailable"');
     expect(htmlWithoutAlt).toContain("Image unavailable");
+  });
+
+  it('treats alt equal to "None" (after trim) as empty on <img>', () => {
+    const html = renderToStaticMarkup(
+      <ArticleImage
+        src="https://medium.com/img/medium/700/1*dummyhash.png"
+        alt="None"
+      />
+    );
+    expect(html).toContain('alt=""');
+    expect(html).not.toContain('alt="None"');
+
+    const htmlTrimmed = renderToStaticMarkup(
+      <ArticleImage
+        src="https://medium.com/img/medium/700/1*dummyhash.png"
+        alt="  None  "
+      />
+    );
+    expect(htmlTrimmed).toContain('alt=""');
+    expect(htmlTrimmed).not.toContain("None");
+  });
+
+  it('treats alt equal to "None" (after trim) as empty in ImageFallback', () => {
+    const html = renderToStaticMarkup(<ImageFallback alt="None" />);
+    expect(html).toContain('aria-label="Image unavailable"');
+    expect(html).toContain("Image unavailable");
+    expect(html).not.toContain("None");
+
+    const htmlWhitespace = renderToStaticMarkup(<ImageFallback alt="  None  " />);
+    expect(htmlWhitespace).toContain('aria-label="Image unavailable"');
+    expect(htmlWhitespace).not.toContain("None");
+  });
+});
+
+describe("article-image - sanitizeAlt", () => {
+  it("returns undefined for 'None', whitespace-padded 'None', empty, or non-string", () => {
+    expect(sanitizeAlt("None")).toBeUndefined();
+    expect(sanitizeAlt("  None  ")).toBeUndefined();
+    expect(sanitizeAlt("")).toBeUndefined();
+    expect(sanitizeAlt("   ")).toBeUndefined();
+    expect(sanitizeAlt(undefined)).toBeUndefined();
+  });
+
+  it("preserves valid alt text descriptions", () => {
+    expect(sanitizeAlt("A cute cat")).toBe("A cute cat");
+    expect(sanitizeAlt("None of the above")).toBe("None of the above");
   });
 });
 
@@ -371,5 +418,43 @@ describe("article-image - resilient retry & fallback lifecycle", () => {
     });
 
     expect(container.querySelector("img")).toBeNull();
+  });
+
+  it('treats alt="None" as empty in live DOM and fallback box', async () => {
+    await act(async () => {
+      root.render(
+        <ArticleImage
+          src="https://miro.medium.com/v2/resize:fit:1400/img.png"
+          alt="None"
+        />
+      );
+    });
+
+    const img = container.querySelector("img");
+    expect(img?.getAttribute("alt")).toBe("");
+
+    // Exhaust retries to verify fallback output
+    await act(async () => {
+      img!.dispatchEvent(new Event("error"));
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(300);
+    });
+    await act(async () => {
+      container.querySelector("img")!.dispatchEvent(new Event("error"));
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(800);
+    });
+    await act(async () => {
+      container.querySelector("img")!.dispatchEvent(new Event("error"));
+    });
+
+    expect(container.querySelector("img")).toBeNull();
+    expect(container.textContent).toContain("Image unavailable");
+    expect(container.textContent).not.toContain("None");
+    expect(
+      container.querySelector('[role="img"]')?.getAttribute("aria-label")
+    ).toBe("Image unavailable");
   });
 });

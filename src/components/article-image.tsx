@@ -29,20 +29,28 @@ export interface ArticleImageProps
   node?: any;
 }
 
+export function sanitizeAlt(alt?: string): string | undefined {
+  if (typeof alt !== "string") return undefined;
+  const trimmed = alt.trim();
+  if (trimmed === "None" || trimmed === "") return undefined;
+  return alt;
+}
+
 export function ImageFallback({ alt }: { alt?: string }) {
+  const displayAlt = sanitizeAlt(alt);
   return (
     <div
       role="img"
-      aria-label={alt ? `Image unavailable: ${alt}` : "Image unavailable"}
+      aria-label={displayAlt ? `Image unavailable: ${displayAlt}` : "Image unavailable"}
       className="my-6 flex flex-col items-center justify-center gap-1 rounded-md border border-border/60 bg-muted/20 px-4 py-6 text-center"
     >
       <div className="flex items-center gap-1.5 text-muted-foreground">
         <ImageOff className="h-4 w-4 shrink-0" aria-hidden="true" />
         <Meta as="span">Image unavailable</Meta>
       </div>
-      {alt ? (
+      {displayAlt ? (
         <Meta as="span" className="max-w-[480px] text-muted-foreground/75 line-clamp-2">
-          {alt}
+          {displayAlt}
         </Meta>
       ) : null}
     </div>
@@ -126,17 +134,18 @@ export function ArticleImage({
   node,
   ...props
 }: ArticleImageProps) {
+  const cleanAlt = sanitizeAlt(alt);
   const rewrittenSrc = typeof src === "string" ? rewriteImageUrl(src) : undefined;
 
   if (!rewrittenSrc) {
-    return <ImageFallback alt={alt} />;
+    return <ImageFallback alt={cleanAlt} />;
   }
 
   return (
     <ResilientImage
       key={rewrittenSrc}
       rewrittenSrc={rewrittenSrc}
-      alt={alt}
+      alt={cleanAlt}
       className={className}
       {...props}
     />
