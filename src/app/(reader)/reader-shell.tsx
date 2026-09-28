@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "./sidebar";
 import type { SidebarArticle } from "@/db/articles";
+import { isArticlePath } from "@/lib/routes";
 
 export function ReaderShell({
   children,
@@ -13,7 +14,7 @@ export function ReaderShell({
   articles: SidebarArticle[];
 }) {
   const pathname = usePathname();
-  const isArticle = pathname.startsWith("/a/");
+  const isArticle = isArticlePath(pathname);
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background">

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { SidebarArticle } from "@/db/articles";
 import { ListItemTitle, ListItemTitleSelected, Meta } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
+import { articlePath } from "@/lib/routes";
 
 export function Sidebar({
   articles,
@@ -37,7 +38,7 @@ export function Sidebar({
       >
         <ul className="flex flex-col gap-1 p-2 list-none m-0">
           {articles.map((article) => {
-            const href = `/a/${article.id}`;
+            const href = articlePath(article.id);
             const isSelected = pathname === href;
             const TitleComponent = isSelected ? ListItemTitleSelected : ListItemTitle;
 
