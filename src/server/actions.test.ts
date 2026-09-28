@@ -4,12 +4,8 @@ vi.mock("next/cache", () => ({
   revalidatePath: vi.fn(),
 }));
 
-vi.mock("@/lib/env", () => ({
-  env: { DATABASE_PATH: ":memory:" },
-}));
-
-vi.mock("@/db/client", () => ({
-  createDb: vi.fn(() => ({})),
+vi.mock("@/db/instance", () => ({
+  getDb: vi.fn(() => ({})),
 }));
 
 vi.mock("@/db/articles", () => ({

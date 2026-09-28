@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
-import { env } from "@/lib/env";
-import { createDb } from "@/db/client";
+import { getDb } from "@/db/instance";
 import { getArticleById } from "@/db/articles";
 import {
   ArticleTitle,
@@ -35,7 +34,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
     );
   }
 
-  const db = createDb(env.DATABASE_PATH);
+  const db = getDb();
   const article = getArticleById(db, id);
 
   if (!article) {
