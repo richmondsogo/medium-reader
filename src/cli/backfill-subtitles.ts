@@ -1,6 +1,6 @@
 import path from "node:path";
 import * as cheerio from "cheerio";
-import { env } from "../lib/env";
+import { env } from "../lib/ingest-env";
 import { createDb, type DbClient } from "../db/client";
 import { listArticlesMissingSubtitle, setArticleSubtitle, getArticleById } from "../db/articles";
 import { httpFetch, type HttpFetchFn } from "../ingest/httpFetch";

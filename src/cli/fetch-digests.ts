@@ -1,4 +1,4 @@
-import { env } from "../lib/env";
+import { env } from "../lib/ingest-env";
 import { fetchDigests } from "../ingest/fetchDigests";
 import { ImapflowClient } from "../ingest/imapflowClient";
 import { createDb } from "../db/client";

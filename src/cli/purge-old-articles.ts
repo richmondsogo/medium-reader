@@ -1,4 +1,4 @@
-﻿import { env } from "../lib/env";
+import { env } from "../lib/ingest-env";
 import { createDb } from "../db/client";
 import { purgeOldArticles, countPurgeCandidates } from "../db/articles";
 import path from "node:path";

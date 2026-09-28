@@ -1,18 +1,8 @@
-import { config } from "dotenv";
-config();
 import { z } from "zod";
 
 export const envSchema = z.object({
   DATABASE_PATH: z.string().default("./data/medium-reader.db"),
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
-  FREEDIUM_BASE_URLS: z
-    .string()
-    .default("https://freedium-mirror.cfd,https://freedium.cfd")
-    .transform((val) => val.split(",").map((s) => s.trim()).filter(Boolean)),
-  GMAIL_USER: z.string(),
-  GMAIL_APP_PASSWORD: z.string(),
-  ARTICLE_FETCH_DELAY_MS: z.coerce.number().default(1500),
-  INGEST_LOOKBACK_DAYS: z.coerce.number().default(14),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -31,3 +21,4 @@ export function parseEnv(
 }
 
 export const env = parseEnv();
+

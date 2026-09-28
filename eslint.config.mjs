@@ -13,6 +13,22 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    files: ["src/app/**", "src/components/**"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["**/ingest-env*", "@/lib/ingest-env*"],
+              message: "Web code must not import ingest-env. Use @/lib/env instead.",
+            },
+          ],
+        },
+      ],
+    },
+  },
 ]);
 
 export default eslintConfig;

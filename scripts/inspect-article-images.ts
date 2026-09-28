@@ -1,6 +1,6 @@
 import { createDb } from "../src/db/client";
 import { articles } from "../src/db/schema";
-import { env } from "../src/lib/env";
+import { env } from "../src/lib/ingest-env";
 import { isNotNull, inArray } from "drizzle-orm";
 import fs from "node:fs";
 import path from "node:path";

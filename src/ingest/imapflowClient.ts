@@ -1,5 +1,5 @@
 import { ImapFlow } from "imapflow";
-import { env } from "../lib/env";
+import { env } from "../lib/ingest-env";
 import { ImapClient } from "./imapClient";
 
 export class ImapConnectionError extends Error {
