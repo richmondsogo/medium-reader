@@ -19,6 +19,8 @@ import { cleanArticleMarkdown } from "@/lib/cleanArticleMarkdown";
 import { getDisplaySubtitle } from "@/lib/getDisplaySubtitle";
 import { MarkReadOnView } from "./mark-read-on-view";
 
+export const dynamic = "force-dynamic";
+
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   const id = parseInt(resolvedParams.id, 10);

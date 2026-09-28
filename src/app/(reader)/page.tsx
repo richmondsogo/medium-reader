@@ -1,4 +1,6 @@
-import { UiLabel } from '@/components/ui/typography';
+import { UiLabel } from "@/components/ui/typography";
+
+export const dynamic = "force-dynamic";
 
 export default function ReaderEmptyState() {
   return (
