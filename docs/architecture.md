@@ -1,6 +1,6 @@
 # Architecture Overview
 
-`medium-reader` is a private, single-user application that ingests Medium Daily Digest emails via IMAP, fetches article content, cleans and converts it to markdown, stores it in SQLite, and serves it through a distraction-free reader UI.
+Daybreak (`medium-reader`) is a private, single-user reading application. It ingests Medium Daily Digest emails via the Internet Message Access Protocol (IMAP). A digest email is a daily summary email sent by Medium that highlights recommended articles. The system fetches article content, cleans and converts HTML into markdown, and stores records in a SQLite database using Write-Ahead Logging (WAL). It serves articles through a Next.js App Router reading interface. The design intentionally omits a separate REST or GraphQL API layer (see Architecture Decision Records ADR 0001 and ADR 0003).
 
 ## System Diagram
 
@@ -11,51 +11,127 @@
                                   |
                                   v
 +-------------------------------------------------------------------+
-| Ingestion Pipeline (CLI cron)                                     |
-|  - IMAP Fetcher & MIME Parser                                     |
-|  - Fetcher Chain: Direct -> Freedium -> Mirror -> Email Snippet   |
+| Ingestion Pipeline (CLI cron via src/cli/fetch-digests.ts)        |
+|  - IMAP Fetcher & MIME Parser (imapflow, mailparser)              |
+|  - Direct-First Fetcher Chain: Medium -> Freedium Mirror -> Raw   |
+|  - Subtitle Extraction & Validation Guards                        |
 |  - Mozilla Readability + Turndown (HTML to Markdown)              |
+|  - Chrome Stripping (cleanArticleMarkdown)                        |
 +---------------------------------+---------------------------------+
                                   |
                                   v (writes)
 +-------------------------------------------------------------------+
 | SQLite Database (WAL mode, FTS5 full-text search)                 |
-| Managed via Drizzle ORM                                           |
+| Managed via Drizzle ORM (src/db/schema.ts)                        |
 +---------------------------------+---------------------------------+
                                   ^
                                   | (queries & mutations)
 +---------------------------------+---------------------------------+
-| Next.js App Router (Single-package Node.js runtime)               |
+| Next.js App Router (Dynamic SSR via src/app)                      |
+|  - Single Cached DB Connection (globalThis.__mediumReaderDb)      |
 |  - React Server Components (direct DB reads)                      |
 |  - Server Actions (direct DB writes / status updates)             |
-|  - Tailwind CSS + shadcn/ui                                       |
+|  - Resilient Image Pipeline (URL rewrite + retries + fallback)    |
+|  - Shared Design Tokens (src/components/ui/typography.tsx)        |
 +---------------------------------+---------------------------------+
                                   |
                                   v (Private Network / Tailscale)
 +-----------------------------------+
 | Reader Client (Clean Reading UI)  |
+| Routes: / and /read/[id]          |
 +-----------------------------------+
 ```
 
 ## Component Architecture
 
-1. **Ingest CLI (`src/ingest`)**:
-   Runs as an idempotent cron job. Polls Medium Daily Digest emails via IMAP, parses digest HTML to extract article URLs, runs them through a resilient fallback fetcher chain, and converts article HTML into markdown using Mozilla Readability.
+### 1. Ingestion Pipeline (`src/ingest`)
 
-2. **Database & Server Layer (`src/server`)**:
-   Encapsulates all SQLite database operations with Drizzle ORM. Enables Write-Ahead Logging (WAL) for concurrent single-writer/multi-reader access and FTS5 virtual tables for full-text search.
+The Command-Line Interface (CLI) runner executes the ingestion process in `src/cli/fetch-digests.ts`. The pipeline executes six sequential steps:
 
-3. **Web Application (`src/app`, `src/components`)**:
-   Next.js App Router application without an intermediate REST/GraphQL API. Server Components render articles directly from the database; Server Actions handle mutations (e.g., mark as read, save, purge).
+1. **Email Discovery**: Connects to Gmail over IMAP using `ImapflowClient` and searches for digest emails within `INGEST_LOOKBACK_DAYS`.
+2. **Digest Parsing**: Parses raw MIME email buffers using `mailparser` in `parseDigest()`. It extracts article URLs, authors, and email snippets.
+3. **Idempotency Check**: Skips previously processed emails by checking `processedEmails` using their unique `messageId` (see ADR 0009).
+4. **Resilient Fetcher Chain**: Fetches article HTML using `fetchArticleHtml()`. It attempts a direct fetch to Medium first. If Medium returns a truncated paywalled preview, it falls back to configured Freedium mirror URLs (see ADR 0004 and ADR 0008). Freedium is an open-source proxy service that renders paywalled Medium articles. If all network fetches fail, it falls back to the email snippet preview.
+5. **Content Extraction and Cleaning**: Converts HTML to markdown using Mozilla Readability and Turndown in `extractArticleContent()`. It strips unwanted Medium page chrome using `cleanArticleMarkdown()`.
+6. **Database Persistence**: Writes normalized records into the `articles` SQLite table with an `ingestedAt` timestamp (see ADR 0006).
 
-4. **Security & Deployment**:
-   Deployed strictly on a private network (e.g. Tailscale) with no public exposure and no external auth layer needed. Markdown rendering disallows raw HTML to prevent injection vulnerabilities.
+### 2. Subtitle Extraction System (`src/ingest/extractSubtitle.ts`)
+
+Medium articles present subtitles in Open Graph metadata tags (`og:description` or `meta[name="description"]`). The ingestion pipeline and the backfill CLI (`src/cli/backfill-subtitles.ts`) extract candidate subtitles during processing.
+
+Candidate subtitles must pass six validation guards in order:
+
+1. **Missing Guard**: Rejects empty strings or whitespace-only candidates.
+2. **Title Duplicate Guard**: Rejects candidates identical to the article title.
+3. **Boilerplate Guard**: Rejects generic publication bylines matching `is published by ...`.
+4. **Truncation Guard**: Rejects candidates ending in ellipsis characters (`…` or `...`).
+5. **Length Guard**: Rejects candidates longer than 200 characters.
+6. **Body Duplicate Guard**: Rejects candidates that duplicate the beginning of the article body text.
+
+The reader user interface accesses validated subtitles using `getDisplaySubtitle()`. If an article lacks a valid subtitle, the reader displays no subtitle rather than falling back to snippet text.
+
+### 3. Image URL Rewrite and Resilient Fallback Layer
+
+Medium images sourced from Freedium mirrors use relative paths like `/img/700/<hash>`. When resolved against `medium.com`, these paths return HTTP 403 Forbidden errors.
+
+The reader handles images through a two-part resilient pipeline:
+
+- **URL Rewriting (`src/lib/rewriteImageUrl.ts`)**: Rewrites `medium.com/img/*` URLs to Medium's public Content Delivery Network (CDN) endpoint at `https://miro.medium.com/v2/resize:fit:1400/<hash>`.
+- **Resilient Image Component (`src/components/article-image.tsx`)**: Replaces default `<img>` tags in markdown rendering. If an image fails to load, the component automatically retries up to two times with backoff delays of 300ms and 800ms. If all retries fail, it renders a clean fallback card (`ImageFallback`) displaying an icon and sanitized alternative text.
+
+### 4. Database Architecture and Concurrency (`src/db`)
+
+Data persistence uses SQLite with better-sqlite3 and Drizzle Object-Relational Mapping (ORM) (see ADR 0002).
+
+- **Concurrency via WAL**: SQLite operates in Write-Ahead Logging (`PRAGMA journal_mode = WAL`). WAL mode enables concurrent reader processes in Next.js while CLI background workers write new articles.
+- **Connection Management in Web Process**: The web server reuses a single cached database connection across requests. `getDb()` caches the instance on `globalThis.__mediumReaderDb` in `src/db/instance.ts` (see ADR 0010). This prevents connection leaks during rendering and server actions.
+- **CLI Connection Model**: CLI scripts create dedicated short-lived connections using `createDb()` in `src/db/client.ts`. Connections close automatically when CLI processes terminate.
+- **Full-Text Search**: An FTS5 virtual table indexes article titles, authors, and markdown content for fast text searches.
+
+### 5. Environment Separation and Security (`src/lib`)
+
+The application enforces a strict two-schema environment configuration to protect sensitive credentials (see ADR 0010):
+
+- **Web Runtime Schema (`src/lib/env.ts`)**: Validates only `DATABASE_PATH` and `LOG_LEVEL`. The web reader process never loads mail credentials or proxy configurations.
+- **Ingest Runtime Schema (`src/lib/ingest-env.ts`)**: Extends the base schema with `GMAIL_USER`, `GMAIL_APP_PASSWORD`, `FREEDIUM_BASE_URLS`, `ARTICLE_FETCH_DELAY_MS`, and `INGEST_LOOKBACK_DAYS`.
+- **Lint Boundary Enforcement**: ESLint enforces a `no-restricted-imports` rule preventing `src/app/**` and `src/components/**` from importing `ingest-env`.
+- **Network Isolation**: The application deploys to a private network (such as Tailscale) without public ports or external authentication systems (see ADR 0005). Markdown rendering disables raw HTML to prevent script injection.
+
+### 6. Web Application and Dynamic Rendering (`src/app`)
+
+The reader runs on the Next.js App Router without intermediate API endpoints (see ADR 0003).
+
+- **Route Structure**:
+  - `/`: Main two-pane layout showing the article sidebar and reading pane.
+  - `/read/[id]`: Article reading view. Article URLs are generated using the `articlePath()` helper from `src/lib/routes.ts`.
+  - `/style-guide`: Design token typography reference for development.
+- **Dynamic Rendering**: Reader routes enforce `export const dynamic = "force-dynamic"` (see ADR 0010). Server Components query SQLite directly on each request. Newly ingested articles and read-state mutations appear immediately in the sidebar without rebuilding the application.
+- **Branding and Typography**: The application brand name is `Daybreak` from `src/lib/brand.ts`. All textual styling uses centralized components from `src/components/ui/typography.tsx`.
 
 ## Running in Production
 
-The production system runs the built Next.js application rather than the development server:
+The production system runs the compiled Next.js application alongside scheduled ingestion jobs (see ADR 0010):
 
-1. **Web Runtime**: The web server runs via `pnpm build && pnpm start`. Reader routes use dynamic rendering (`export const dynamic = "force-dynamic"`) so newly ingested articles and reading state mutations render on each request without a rebuild. The web process reads only `DATABASE_PATH` and `LOG_LEVEL`, holding no mail credentials.
-2. **Ingest Runtime**: Ingestion (`pnpm fetch-digests`) runs as a separate cron process using `src/lib/ingest-env.ts` (which holds Gmail IMAP credentials).
-3. **Database Concurrency**: The web process and CLI processes share the SQLite file concurrently via Write-Ahead Logging (`PRAGMA journal_mode = WAL`). The web process reuses a single cached connection (`getDb()`), while CLIs instantiate short-lived connections (`createDb`).
+1. **Web Runtime**: Build and start the production server:
 
+```bash
+pnpm build
+```
+
+```bash
+pnpm start
+```
+
+2. **Ingest Job**: Schedule the ingestion CLI as a recurring background cron task:
+
+```bash
+pnpm fetch-digests
+```
+
+3. **Retention Purge**: Schedule periodic cleanup for articles older than 90 days:
+
+```bash
+pnpm purge-old-articles --confirm
+```
+
+4. **Database Concurrency**: The web process and background CLI processes read and write to the same SQLite file simultaneously through WAL mode.
